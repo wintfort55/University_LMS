@@ -1,0 +1,562 @@
+{% extends "admin_dash.html" %}
+
+{% block title %}
+    {{ _('Admin-Lessons') }}
+{% endblock %}
+
+
+{% block admin_dash_courses %}
+    <!-- VIEW Lessons -->
+    {% if no_edit %}
+        <div class="container" id="lesson_no_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <h2 class="mt-3">{{ course_title }}: {{ section_title }} - {{ _('Lessons') }}</h2>
+            <form action="/add_lesson" method="post">
+                <input name="lesson_section_id" type="hidden" value="{{ section_id }}">
+                <button class="btn btn-success btn-sm ms-3 my-2" type="submit" style="min-width: 60px;">{{ _('Add Lesson') }}</button>
+            </form>
+            <div>
+                <table class="table text-center" style="align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Id') }}</th>
+                            <th>{{ _('Title') }}</th>
+                            <th>{{ _('Lesson Number') }}</th>
+                            <th>{{ _('Published') }}</th>
+                            <th>{{ _('Options') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the section database to display them in this table -->
+                    {% for lesson in lessons %}
+                        <tr>
+                            <td>{{ lesson.lesson_id }}</td>
+                            <td>{{ lesson.lesson_title }}</td>
+                            <td>{{ lesson.lesson_number }}</td>
+                            <td>{% if lesson.lesson_id %}
+                                {{ _('Yes') if lesson.lesson_published else _('No') }}
+                                {% endif %}</td>
+                            <td>
+                                <!-- Options -->
+                                <div class="d-inline-flex gap-2">
+                                    <!-- View -->
+                                    {% if lesson.lesson_id %}
+                                    <form action="/lesson_detail/{{ lesson.lesson_id }}" method="post">
+                                        <input name="lesson_view_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Edit -->
+                                    <form action="/lesson_edit" method="post">
+                                        <input name="lesson_edit_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Edit Translate -->
+                                    <form action="/lesson_translate" method="post">
+                                        <input name="lesson_course_id" type="hidden" value="{{ course_id }}">
+                                        <input name="lesson_section_id" type="hidden" value="{{ section_id }}">
+                                        <input name="lesson_edit_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-info btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Translate') }}</button>
+                                    </form>
+                                    <form action="/quiz" method="post">
+                                        <input name="quiz_lesson_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Quiz') }}</button>
+                                    </form>
+                                    <!-- TODO: Add HW -->
+                                    <!-- Content -->
+                                    <!-- TODO: enable content when ready -->
+                                    <!-- <form action="/content" method="post">
+                                        <input name="content_lesson_id" type="hidden" value="">
+                                        <button class="btn btn-secondary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">Content</button>
+                                    </form> -->
+                                    {% else %}
+                                    <!--  Disabled View -->
+                                    <form action="/lesson_detail/{{ lesson.lesson_id }}" method="post">
+                                        <input name="lesson_view_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Disabled Edit -->
+                                    <form action="/section_edit" method="post">
+                                        <input name="lesson_edit_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                     <!-- Disabled Lessons -->
+                                     <form action="/lessons" method="post">
+                                        <input name="content_lesson_id" type="hidden" value="{{ lesson.lesson_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Content') }}</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+    <!-- EDIT Lessons -->
+    {% if yes_edit %}
+        <!-- Display Course information -->
+        <div class="container" id="lesson_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1">
+            </div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ _('Edit Lesson') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/lessons" method="post">
+                    <input name="lesson_section_id" type="hidden" value="{{ section_id }}">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+            <!-- <h2 class="mt-3">Edit Lesson</h2> -->
+                <div class="mb-5 mt-3">
+                    {% for lesson in lessons %}
+                    <form action="/lesson_edit_confirm" method="post" enctype="multipart/form-data">  
+                        <!-- Lesson Id -->
+                        <div class="row mb-3 mx-3 align-items-center">
+                            <label for="editLessonId" class="col-sm-2 col-form-label">{{ _('Lesson Id') }}</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" style="border: none;" id="editLessonId" value="{{ lesson.lesson_id }}" readonly>
+                            </div>
+                        </div>
+                        <!-- Title -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="lessonTitle" name="lessonTitle" placeholder="*" value="{{ lesson.lesson_title }}">
+                            </div>
+                        </div>
+                        <!-- Subtitle -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="lessonSubtitle" name="lessonSubtitle" placeholder="*" value="{{ lesson.lesson_subtitle }}">
+                            </div>
+                        </div>
+                        <!-- Overview -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                            <div class="col-sm-10">
+                                <textarea type="text" rows="3" class="form-control text-wrap" id="lessonOverview" name="lessonOverview" placeholder="*">{{ lesson.lesson_overview }}</textarea>
+                            </div>
+                        </div>
+                        <!-- Text -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonText" class="col-sm-2 col-form-label">{{ _('Text') }}</label>
+                            <div class="col-sm-10">
+                                <textarea type="text" rows="3" class="form-control text-wrap" id="lessonText" name="lessonText">{{ lesson.lesson_text }}</textarea>
+                            </div>
+                        </div>
+                        <!-- Published -->
+                        <div class="row mb-3 mx-4">
+                            <label for="lessonPublish" class="col-sm-2 col-form-label">{{ _('Publish') }}</label>
+                            <select id="lessonPublish" autocomplete="off" class="form-select col-sm-2" size="1" name="lessonPublish" area-label="Published" type="select">
+                                    <option selected value="{{ lesson.lesson_published }}">{{ _('Yes') if lesson.lesson_published else _('No') }}</option>
+                                    <option type="number" value="1">{{ _('Yes') }}</option>
+                                    <option type="number" value="0">{{ _('No') }}</option>
+                            </select>
+                        </div>
+                        <!-- Video Link -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonVideo" class="col-sm-2 col-form-label">{{ _('Video Link') }}</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="lessonVideo" name="lessonVideo" value="{{lesson.lesson_video }}">
+                            </div>
+                        </div>
+                        <!-- TODO: Download enable -->
+                        <!-- Link Placeholder -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonLinkPlaceholder" class="col-sm-2 col-form-label">{{ _('Link Placeholder') }}</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="lessonLinkPlaceholder" name="lessonLinkPlaceholder" value="{{lesson.lesson_link_placeholder }}">
+                            </div>
+                        </div>
+                        <!-- Link -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonLink" class="col-sm-2 col-form-label">{{ _('Link') }}</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="lessonLink" name="lessonLink" value="{{lesson.lesson_link }}">
+                            </div>
+                        </div>
+                        <!-- Picture Link -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonPicture" class="col-sm-2 col-form-label">{{ _('Current Picture') }}</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" id="lessonPicture" name="lessonPicture" value="{{ lesson.lesson_picture }}">
+                            </div>
+                          </div>
+                          <!-- Picture Upload -->
+                          <div class="row mb-3 mx-3">
+                            <label for="lessonNewPic" class="col-sm-2 col-form-label">{{ _('Upload New Picture') }}</label>
+                            <div class="col-sm-6">
+                                <input type="file" name="lessonNewPic" class="form-control" id="lessonNewPic">
+                            </div>
+                          </div>
+                          <!-- PDF Link Placeholder -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonPDFplaceholder" class="col-sm-2 col-form-label">{{ _('PDF Placeholder') }}</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="lessonPDFplaceholder" name="lessonPDFplaceholder" value="{{lesson.lesson_pdf_placeholder }}">
+                            </div>
+                        </div>
+                          <!-- PDF Link -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonPDF" class="col-sm-2 col-form-label">{{ _('Current PDF') }}</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" id="lessonPDF" name="lessonPDF" value="{{ lesson.lesson_pdf }}">
+                            </div>
+                        </div>
+                          <!-- PDF Upload -->
+                        <div class="row mb-3 mx-3">
+                            <label for="lessonNewPDF" class="col-sm-2 col-form-label">{{ _('Upload New PDF') }}</label>
+                            <div class="col-sm-6">
+                                <input type="file" name="lessonNewPDF" class="form-control" id="lessonNewPDF">
+                            </div>
+                        </div>
+                        <!-- Lesson Number -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputLessonNumber" class="col-sm-2 col-form-label">{{ _('Lesson Number') }}</label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="inputLessonNumber" name="inputLessonNumber" placeholder="*" value="{{ lesson.lesson_number }}">
+                            </div>
+                        </div>
+                        <!-- Submit Edited Lesson -->
+                        <input name="lesson_edit_id" type="hidden" value="{{ lesson.lesson_id }}">
+                        <input name="section_edit_id" type="hidden" value="{{ lesson.lesson_section_id }}">
+                        <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+                    </form>
+                    
+                    {% endfor %}
+                </div>
+                <!-- TODO: -->
+                <!-- Delete lesson -->
+                <form class="align-self-center mb-3" action="/delete_lesson" method="post">
+
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        {{ _('Delete') }}
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ _('Confirm Deletion') }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{ _('Are you Sure you Want to Delete This Section?') }}'
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('No') }}</button>
+                            <input name="delete_lesson_id" type="hidden" value="{{ lesson_edit_id }}">
+                            <input name="section_edit_id" type="hidden" value="{{ section_id }}">
+                            <button class="btn btn-danger ms-3" style="min-width: 60px;" type="submit">{{ _('Yes, Delete') }}</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    {% endif %}
+    <!-- ADD Lesson -->
+    {% if yes_add %}
+    <!-- Overall container -->
+    <div class="container" id="lesson_add" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Container Title -->
+            <div class="col-11 align-self-center">
+                <h2 class="mt-3 ms-5 justify-self-center">{{ _('Add Lesson') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/lessons" method="post">
+                    <input name="lesson_section_id" type="hidden" value="{{ section_id }}">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Display Lesson Fields information -->
+        <div class="mb-5 mt-3">
+            <form action="/lesson_add_confirm" method="post" enctype="multipart/form-data">  
+                <!-- Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                    <input type="text" class="form-control" id="lessonTitle" name="lessonTitle" placeholder="*">
+                    </div>
+                </div>
+                <!-- Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                    <input type="text" class="form-control text-wrap" id="lessonSubtitle" name="lessonSubtitle">
+                    </div>
+                </div>
+                <!-- Overview -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="lessonOverview" name="lessonOverview" placeholder="*"></textarea>
+                        <!-- <input type="text" class="form-control text-wrap" id="lessonOverview" name="lessonOverview"> -->
+                    </div>
+                </div>
+                <!-- Video Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonVideo" class="col-sm-2 col-form-label">{{ _('Video Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="lessonVideo" name="lessonVideo">
+                    </div>
+                </div>
+                <!--  Additional Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonLink" class="col-sm-2 col-form-label">{{ _('Additional Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="lessonLink" name="lessonLink">
+                    </div>
+                </div>
+                <!-- Picture Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonPicture" class="col-sm-2 col-form-label">{{ _('Picture') }}</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="file" id="lessonPicture" name="lessonPicture">
+                    </div>
+                </div>
+                <!-- Text -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonText" class="col-sm-2 col-form-label">{{ _('Text') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="lessonText" name="lessonText"></textarea>
+                    </div>
+                </div>
+                
+                <!-- TODO: Download PDF link -->
+
+                <!-- Submit New Lesson -->
+                <input name="lesson_section_id" type="hidden" value="{{ section_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    {% if yes_edit_translate %}
+    <!-- Display Lesson information -->
+    <div class="container" id="section_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <!-- Header Container -->
+            <div class="container d-flex text-center">
+                <!-- Spacer -->
+                <div class="col-1">
+                </div>
+                <!-- Container Title -->
+                <div class="col-10 align-self-center">
+                    <h2 class="mt-3 ms-4 justify-self-center">{{ _('Edit Lesson Translation') }}</h2>
+                </div>
+                <!-- Container Exit -->
+                <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                    <form action="/sections" method="post">
+                        <input name="section_course_id" type="hidden" value="{{ course_id }}">
+                        <button type="submit" class="btn-close" aria-label="Close"></button>
+                    </form>
+                </div>
+            </div>
+        <div class="mb-5 mt-3">
+            {% for lesson in lessons %}
+            <form action="/lesson_translate_confirm" method="post" enctype="multipart/form-data">  
+                <!-- Original Title -->
+                <div class="row mx-3">
+                    <div class="col-12 align-self-center">
+                        <h5 class="mt-1 justify-self-center">{{ _('Original') }}</h5>
+                    </div>
+                </div>
+                <!-- Lesson Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputLessonId" class="col-sm-2 col-form-label">{{ _('Lesson Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputLessonId" aria-describedby="lessonIdHelpInline" value="{{ lesson.lesson_id }}" readonly>
+                    </div>
+                </div>
+                <!-- Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputLessonTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="inputLessonTitle" name="inputLessonTitle" value="{{ lesson.lesson_title }}" readonly>
+                    </div>
+                  </div>
+                  <!-- Subtitle -->
+                  <div class="row mb-3 mx-3">
+                    <label for="inputLessonSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control text-wrap" id="inputLessonSubtitle" name="inputLessonSubtitle" value="{{ lesson.lesson_subtitle }}" readonly>
+                    </div>
+                  </div>
+                  <!-- Overview -->
+                  <div class="row mb-3 mx-3">
+                      <label for="inputLessonOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                      <div class="col-sm-10">
+                          <textarea type="text" rows="3" class="form-control text-wrap" id="inputLessonOverview" name="inputLessonOverview" aria-readonly="true">{{ lesson.lesson_overview }}</textarea>
+                      </div>
+                  </div>
+                  <!-- Text -->
+                  <div class="row mb-3 mx-3">
+                    <label for="lessonText" class="col-sm-2 col-form-label">{{ _('Text') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="lessonText" name="lessonText" aria-readonly="true">{{ lesson.lesson_text }}</textarea>
+                    </div>
+                </div>
+                <!-- Link Placeholder -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonLinkPlaceholder" class="col-sm-2 col-form-label">{{ _('Link Placeholder') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="lessonLinkPlaceholder" name="lessonLinkPlaceholder" value="{{lesson.lesson_link_placeholder }}" readonly>
+                    </div>
+                </div>
+                <!-- PDF Link Placeholder -->
+                <div class="row mb-3 mx-3">
+                    <label for="lessonPDFplaceholder" class="col-sm-2 col-form-label">{{ _('PDF Placeholder') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="lessonPDFplaceholder" name="lessonPDFplaceholder" value="{{lesson.lesson_pdf_placeholder }}" readonly>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for translation in translations %}
+                <!-- Translation Title -->
+                <div class="row mx-3">
+                    <hr class="hr hr-blurry" />
+                    <div class="col-12 align-self-center">
+                        <h5 class="mt-1 justify-self-center">{{ _('Translation') }}</h5>
+                    </div>
+                </div>
+                <!-- Lesson Translation Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputLTId" class="col-sm-2 col-form-label">{{ _('Translation Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputLTId" aria-describedby="ltIdHelpInline" value="{{ translation.lt_id }}" readonly>
+                    </div>
+                </div>
+                <!-- LT Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputLTTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputLTTitle" name="inputLTTitle" value="{{ translation.lt_title }}" required>
+                    </div>
+                </div>
+                <!-- LT Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputLTSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputLTSubtitle" name="inputLTSubtitle" value="{{ translation.lt_subtitle }}">
+                    </div>
+                </div>
+                <!-- LT Overview -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputLTOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="inputLTOverview" name="inputLTOverview">{{ translation.lt_overview }}</textarea>
+                    </div>
+                </div>
+                <!-- LT Text -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputLTText" class="col-sm-2 col-form-label">{{ _('Text') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="inputLTText" name="inputLTText">{{ translation.lt_text }}</textarea>
+                    </div>
+                </div>
+                <!-- LT Language (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputLTLanguage" class="col-sm-2 col-form-label">{{ _('Translation Language') }}</label>
+                    <select id="inputLTLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputLTLanguage" area-label="Level" type="select" required>
+                        {% if translation.lt_language_id %}
+                            {% if translation.lt_language_id == 1 %}
+                            <option selected value="{{ translation.lt_language_id }}">{{ _('English') }}</option>
+                            <option value="2">{{ _('French') }}</option>
+                            {% else %}
+                            <option selected value="{{ translation.lt_language_id }}">{{ _('French') }}</option>
+                            <option value="1">{{ _('English') }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="" selected>{{ _('Select Language') }}</option>
+                            {% for language in languages %}
+                                <option value="{{ language.language_id }}">{{ language.language }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <!-- LT Video Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputLTVideo" class="col-sm-2 col-form-label">{{ _('Intro Video Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputLTVideo" name="inputLTVideo" value="{{ translation.lt_video }}">
+                    </div>
+                </div>
+                <!-- LT Picture Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="currentLTPic" class="col-sm-2 col-form-label">{{ _('Current Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="currentLTPic" name="currentLTPic" value="{{ translation.lt_picture }}">
+                    </div>
+                </div>
+                <!-- LT Picture Upload -->
+                <div class="row mb-3 mx-3">
+                    <label for="ltPicUpload" class="col-sm-2 col-form-label">{{ _('Upload New Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input type="file" name="ltPicUpload" class="form-control" id="ltPicUpload">
+                    </div>
+                </div>
+                <!-- Link Placeholder -->
+                <div class="row mb-3 mx-3">
+                    <label for="ltLinkPlaceholder" class="col-sm-2 col-form-label">{{ _('Link Placeholder') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="ltLinkPlaceholder" name="ltLinkPlaceholder" value="{{translation.lt_link_placeholder }}">
+                    </div>
+                </div>
+                <!-- Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="ltLink" class="col-sm-2 col-form-label">{{ _('Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="ltLink" name="ltLink" value="{{ translation.lt_link }}">
+                    </div>
+                </div>
+                <!-- PDF Link Placeholder -->
+                <div class="row mb-3 mx-3">
+                    <label for="ltPDFplaceholder" class="col-sm-2 col-form-label">{{ _('PDF Placeholder') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="ltPDFplaceholder" name="ltPDFplaceholder" value="{{ translation.lt_pdf_placeholder }}">
+                    </div>
+                </div>
+                  <!-- PDF Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="ltPDF" class="col-sm-2 col-form-label">{{ _('PDF') }}</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="ltPDF" name="ltPDF" value="{{ translation.lt_pdf }}">
+                    </div>
+                </div>
+                <!-- PDF Upload -->
+                <div class="row mb-3 mx-3">
+                    <label for="ltNewPDF" class="col-sm-2 col-form-label">{{ _('Upload New PDF') }}</label>
+                    <div class="col-sm-6">
+                        <input type="file" name="ltNewPDF" class="form-control" id="ltNewPDF">
+                    </div>
+                </div>
+                
+                <!-- Submit Changes -->
+                <input name="lesson_course_id" type="hidden" value="{{ course_id }}">
+                <input name="lesson_section_id" type="hidden" value="{{ section_id }}">
+                <input name="lesson_edit_id" type="hidden" value="{{ edit_lesson_id }}">
+                <input name="lesson_translation_id" type="hidden" value="{{ lt_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

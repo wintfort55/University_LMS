@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Courses') }}
+{% endblock %}
+
+{% if admin %}
+    {% block admin_nav %}
+        <li class="nav-item"><a class="nav-link" href="/admin_dash">{{ _('Dashboard') }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="/published_courses">{{ _('Published') }}</a></li>
+    {% endblock %}
+{% endif %}
+
+{% block main %}
+    <!-- Chat GPT - Available Courses Display List -->
+    <div class="container">
+        <h1 class="my-4">{{ _('Available Courses') }}</h1>
+        <div class="row justify-content-center">
+            {% for course in courses %}
+                {% if course.course_published %}
+                <div class="col-md-4 mb-4 px-4" id="course_display">
+                    <div class="card h-100">
+                        {% if course.course_picture%}
+                            <img src="static/images/uploads/{{ course.course_picture }}" class="card-img-top" alt="...">
+                        {% endif %}
+                        <div class="card-body">
+                            <h4 class="card-title">{{ course.course_title }}</h4>
+                            <p class="card-text">{{ course.course_subtitle }}</p>
+                            {% if course.course_start%}
+                            <p><strong>{{ _('Start Date:') }}</strong> {{ course.course_start }}</p>
+                            {% endif %}
+                            {% if course.course_end%}
+                            <p><strong>{{ _('End Date:') }}</strong> {{ course.course_end }}</p>
+                            {% endif %}
+                            <p><strong>{{ _('Capacity:') }}</strong> {{ course.course_capacity }}</p>
+                            <form action="/course_detail/{{ course.course_id }}" method="post">
+                                <input name="course_view_id" type="hidden" value="{{ course.course_id }}">
+                                <button class="btn btn-primary" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

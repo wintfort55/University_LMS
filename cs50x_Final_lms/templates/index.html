@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Index') }}
+{% endblock %}
+
+
+
+{% block main %}
+    <h1>
+        {{ _('Welcome,') }} {{ users.first_name }}!
+    </h1>   
+{% endblock %}

@@ -1,0 +1,686 @@
+{% extends "admin_dash.html" %}
+
+{% block title %}
+    {{ _('Admin-Courses') }}
+{% endblock %}
+
+
+{% block admin_dash_courses %}
+    <!-- VIEW Courses -->
+    {% if no_edit %}
+        <div class="container" id="courses_no_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <h2 class="mt-3">{{ _('All Courses') }}</h2>
+            <!-- Add Course Button -->
+            <form action="/add_course" method="post">
+                <button class="btn btn-success btn-sm ms-3 my-2" type="submit" style="min-width: 60px;">{{ _('Add Course') }}</button>
+            </form>
+            <div>
+                <table class="table" style="align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Id') }}</th>
+                            <th>{{ _('Title') }}</th>
+                            <th>{{ _('Capacity') }}</th>
+                            <th>{{ _('Level') }}</th>
+                            <th>{{ _('Instructor') }}</th>
+                            <th>{{ _('Language') }}</th>
+                            <th>{{ _('Published') }}</th>
+                            <th>{{ _('Options') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the courses database to display them in this table -->
+                    {% for course in courses %}
+                        <tr>
+                            <td>{{ course.course_id }}</td>
+                            <td>{{ course.course_title }}</td>
+                            <td>{{ course.course_capacity }}</td>
+                            <td>{{ course.level }}</td>
+                            <td>{{ course.first_name }} {{ course.last_name }}</td>
+                            <td>{{ _('French') if course.language_id == 2 else _('English') }}</td>
+                            <td>{{ _('Yes') if course.course_published else _('No') }}</td>
+                            <td>
+                                <!-- Options -->
+                                <div class="d-inline-flex gap-2">
+                                    {% if course.course_id %}
+                                    <!-- View -->
+                                    <form action="/course_detail/{{ course.course_id }}" method="post">
+                                        <input name="course_view_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Edit -->
+                                    <form action="/course_edit" method="post">
+                                        <input name="course_edit_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Edit Translate -->
+                                    <form action="/course_translate" method="post">
+                                        <input name="course_edit_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-info btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Translate') }}</button>
+                                    </form>
+                                    <!-- Sections -->
+                                    <form action="/sections" method="post">
+                                        <input name="section_course_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Sections') }}</button>
+                                    </form>
+                                    {% else %}
+                                    <!-- Disabled View -->
+                                    <form action="/course_detail/{{ course.course_id }}" method="post">
+                                        <input name="course_view_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Disabled Edit -->
+                                    <form action="/course_edit" method="post">
+                                        <input name="course_edit_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Disabled Edit Translate -->
+                                    <form action="/course_translate" method="post">
+                                        <input name="course_edit_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-info btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Translate') }}</button>
+                                    </form>
+                                    <!-- Disabled Sections -->
+                                    <form action="/sections" method="post">
+                                        <input name="section_course_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Sections') }}</button>
+                                    </form>
+                                    {% endif %}
+                                    <!-- Delete 1 (works if wanted)-->
+                                    <!-- <form action="/delete_course" method="post">
+                                        <input name="delete_course_id" type="hidden" value="">
+                                        <button class="btn btn-danger ms-3 btn-sm ms-2" style="min-width: 60px;" type="submit">Delete 1</button>
+                                    </form> -->
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Chat GPT - Available Courses Display List -->
+        <div class="container">
+            <div class="my-4">
+            <!-- <h1 class="my-4">Published Courses</h1> -->
+            </div>
+            <div class="row justify-content-center">
+                {% for course in courses %}
+                <div class="col-md-4 mb-4 px-4" id="course_display">
+                    <div class="card h-100">
+                        {% if course.course_picture%}
+                            <img src="static/images/uploads/{{ course.course_picture }}" class="card-img-top" alt="...">
+                        {% endif %}
+                        <div class="card-body">
+                            <h4 class="card-title">{{ course.course_title }}</h4>
+                            <p class="card-text">{{ course.course_subtitle }}</p>
+                            {% if course.course_start%}
+                            <p><strong>{{ _('Start Date:') }}</strong> {{ course.course_start }}</p>
+                            {% endif %}
+                            {% if course.course_end%}
+                            <p><strong>{{ _('End Date:') }}</strong> {{ course.course_end }}</p>
+                            {% endif %}
+                            <p><strong>{{ _('Capacity:') }}</strong> {{ course.course_capacity }}</p>
+                            <form action="/course_detail/{{ course.course_id }}" method="post">
+                                <input name="course_view_id" type="hidden" value="{{ course.course_id }}">
+                                <button class="btn btn-primary" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Chat GPT - New Courses - Homepage Highlights -->
+        <div class="container">
+            <!-- TODO: configure with dates -->
+            <!-- <h2>New Courses</h2>
+            <div class="row">
+                {% for course in courses %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ course.course_title }}</h4>
+                            <p class="card-text">{{ course.course_subtitle }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div> -->
+        </div>
+    {% endif %}
+    <!-- EDIT Courses -->
+    {% if yes_edit %}
+        <!-- Display Course information -->
+        <div class="container" id="course_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <!-- Header Container -->
+            <div class="container d-flex text-center">
+                <!-- Spacer -->
+                <div class="col-1">
+                </div>
+                <!-- Container Title -->
+                <div class="col-10 align-self-center">
+                    <h2 class="mt-3 justify-self-center">{{ _('Edit Course') }}</h2>
+                </div>
+                <!-- Container Exit -->
+                <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                    <form action="/courses" method="post">
+                        <button type="submit" class="btn-close" aria-label="Close"></button>
+                    </form>
+                </div>
+            </div>
+                <div class="mb-5 mt-3">
+                    {% for course in courses %}
+                    <form action="/course_edit_confirm" method="post" enctype="multipart/form-data">  
+                        <!-- Course Id -->
+                        <div class="row mb-3 mx-3 align-items-center">
+                            <label for="inputCourseId" class="col-sm-2 col-form-label">{{ _('Course Id') }}</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" style="border: none;" id="inputCourseId" aria-describedby="courseIdHelpInline" value="{{ course.course_id }}" readonly>
+                            </div>
+                        </div>
+                        <!-- Title -->
+                        <div class="row mb-3 mx-3">
+                          <label for="inputTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="inputTitle" name="inputTitle" value="{{ course.course_title }}" required>
+                          </div>
+                        </div>
+                        <!-- Subtitle -->
+                        <div class="row mb-3 mx-3">
+                          <label for="inputSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                          <div class="col-sm-10">
+                            <!-- <span class="input-group-text" id="basic-addon1">Subtitle</span> -->
+                            <input type="text" class="form-control text-wrap" id="inputSubtitle" name="inputSubtitle" value="{{ course.course_subtitle }}" required>
+                          </div>
+                        </div>
+                        <!-- Overview -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                            <div class="col-sm-10">
+                                <textarea type="text" rows="3" class="form-control text-wrap" id="inputOverview" name="inputOverview" required>{{ course.course_overview }}</textarea>
+                            </div>
+                        </div>
+                        <!-- Capacity -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputCapacity" class="col-sm-2 col-form-label">{{ _('Capacity') }}</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="inputCapacity" name="inputCapacity" value="{{ course.course_capacity }}" required>
+                            </div>
+                        </div>
+                        <!-- Level (select)-->
+                        <div class="row mb-3 mx-4">
+                            <label for="inputLevel" class="col-sm-2 col-form-label">{{ _('Level') }}</label>
+                            <select id="inputLevel" autocomplete="off" class="form-select col-sm-2" size="1" name="inputLevel" area-label="Level" type="select" required>
+                                    <option selected value="{{ course.level_id }}">{{ course.level }}</option>
+                                {% for level in levels %}
+                                    <option value="{{ level.level_id }}">{{ level.level }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Start Date -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputStart" class="col-sm-2 col-form-label">{{ _('Start Date') }}</label>
+                            <div class="col-sm-2">
+                                <input type="date" class="form-control" id="inputStart" name="inputStart" value="{{ course.course_start }}">
+                            </div>
+                        </div>
+                        <!-- End Date -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputEnd" class="col-sm-2 col-form-label" >{{ _('End Date') }}</label>
+                            <div class="col-sm-2">
+                                <input type="date" class="form-control" id="inputEnd" name="inputEnd" value="{{ course.course_end }}">
+                            </div>
+                        </div>
+                        <!-- Published -->
+                        <div class="row mb-3 mx-4">
+                            <label for="inputPublished" class="col-sm-2 col-form-label">{{ _('Publish') }}</label>
+                            <select id="inputPublished" autocomplete="off" class="form-select col-sm-2" size="1" name="inputPublished" area-label="Published" type="select" required>
+                                    <option selected value="{{ course.course_published }}">{{ _('Yes') if course.course_published else _('No') }}</option>
+                                    <option type="text" value="1">{{ _('Yes') }}</option>
+                                    <option type="text" value="0">{{ _('No') }}</option>
+                            </select>
+                        </div>
+                        <!-- Curriculum -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputCurriculum" class="col-sm-2 col-form-label">{{ _('Curriculum') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputCurriculum" name="inputCurriculum" value="{{ course.course_curriculum }}">
+                            </div>
+                        </div>
+                        <!-- Pre-requisites -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputPrerequisite" class="col-sm-2 col-form-label">{{ ('Pre-requisite') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputPrerequisite" name="inputPrerequisite" value="{{ course.course_prerequisite }}">
+                            </div>
+                        </div>
+                        <!-- Video Link -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputVideo" class="col-sm-2 col-form-label">{{ _('Intro Video Link') }}</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="inputVideo" name="inputVideo" value="{{ course.course_video }}">
+                            </div>
+                          </div>
+                          <!-- Picture Link -->
+                          <div class="row mb-3 mx-3">
+                            <label for="currentPic" class="col-sm-2 col-form-label">{{ _('Current Picture') }}</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" id="currentPic" name="currentPic" value="{{ course.course_picture }}">
+                            </div>
+                          </div>
+                          <!-- Picture Upload -->
+                          <div class="row mb-3 mx-3">
+                            <label for="coursePicUpload" class="col-sm-2 col-form-label">{{ _('Upload New Picture') }}</label>
+                            <div class="col-sm-6">
+                                <input type="file" name="coursePicUpload" class="form-control" id="coursePicUpload">
+                            </div>
+                          </div>
+                        <!-- Structure (select) -->
+                        <div class="row mb-3 mx-4">
+                            <label for="inputStructure" class="col-sm-2 col-form-label">{{ _('Structure') }}</label>
+                            <select id="inputStructure" autocomplete="off" class="form-select col-sm-2" size="1" name="inputStructure" area-label="Structure" type="select" required>
+                                    <option selected value="{{ course.structure_id }}">{{ course.structure }}</option>
+                                {% for structure in structures %}
+                                    <option value="{{ structure.course_structure_id }}">{{ structure.structure }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Language (select) -->
+                        <div class="row mb-3 mx-4">
+                            <label for="inputLanguage" class="col-sm-2 col-form-label">{{ _('Language') }}</label>
+                            <select id="inputLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputLanguage" area-label="Language" type="select" required>
+                                    <option selected value="{{ course.language_id }}">{{ course.language }}</option>
+                                {% for language in languages %}
+                                    <option value="{{ language.language_id }}">{{ language.language }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Instructor (select)-->
+                        <div class="row mb-3 mx-4">
+                            <label for="inputInstructor" class="col-sm-2 col-form-label">{{ _('Instructor') }}</label>
+                            <select id="inputInstructor" autocomplete="off" class="form-select col-sm-2" size="1" name="inputInstructor" area-label="Instructor" type="select" required>
+                                    <option selected value="{{ course.instructor_id }}">{{ course.first_name }} {{ course.last_name }}</option>
+                                {% for instructor in instructors %}
+                                    <option value="{{ instructor.id }}">{{ instructor.first_name }} {{ instructor.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Submit Changes -->
+                        <input name="course_edit_id" type="hidden" value="{{ edit_course_id }}">
+                        <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+                    </form>
+                    <!-- Original Picture Upload -->
+                    <!-- <div class="row my~-3 mx-3">
+                        <div class="col-sm-6">
+                            <form action="/upload" method="post" enctype="multipart/form-data">
+                                <div class="input-group">
+                                    <label for="file" class="col-sm-4 col-form-label">Upload Picture</label>
+                                    <input type="file" name="file" class="form-control" id="inputGroupFile" aria-describedby="inputGroupFileAddon" aria-label="Upload">
+                                    <input class="btn btn-outline-secondary" type="submit" value="Upload" id="inputGroupFileAddon">
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
+                    
+                    {% endfor %}
+                </div>
+                <!-- Delete Course -->
+                <form class="align-self-center mb-3" action="/delete_course" method="post">
+
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        {{ _('Delete') }}
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ _('Confirm Deletion') }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            {{ _('Are you Sure you Want to Delete This Course?') }}'
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('No') }}</button>
+                            <input name="delete_course_id" type="hidden" value="{{ edit_course_id }}">
+                            <button class="btn btn-danger ms-3" style="min-width: 60px;" type="submit">{{ _('Yes, Delete') }}</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    {% endif %}
+    <!-- ADD Courses -->
+    {% if yes_add %}
+    <!-- Display Course Fields information -->
+    <div class="container" id="course_add" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+         <!-- Header Container -->
+         <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1">
+            </div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ _('Add Course') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/courses" method="post">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            <form action="/course_add_confirm" method="post" enctype="multipart/form-data">  
+                <!-- Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                    <input type="text" class="form-control" id="inputTitle" name="inputTitle" placeholder="*" required>
+                    </div>
+                </div>
+                <!-- Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                    <!-- <span class="input-group-text" id="basic-addon1">Subtitle</span> -->
+                    <input type="text" class="form-control text-wrap" id="inputSubtitle" name="inputSubtitle" placeholder="*" required>
+                    </div>
+                </div>
+                <!-- Overview -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="inputOverview" name="inputOverview" placeholder="*" required></textarea>
+                    </div>
+                </div>
+                <!-- Capacity -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCapacity" class="col-sm-2 col-form-label">{{ _('Capacity') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="inputCapacity" name="inputCapacity" placeholder="*" required>
+                    </div>
+                </div>
+                <!-- Level (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputLevel" class="col-sm-2 col-form-label">{{ _('Level') }}</label>
+                    <select id="inputLevel" autocomplete="off" class="form-select col-sm-2" size="1" name="inputLevel" area-label="Level" type="select" required>
+                        <option value="" selected>{{ _('Select Level') }}</option>
+                        {% for level in levels %}
+                            <option value="{{ level.level_id }}">{{ level.level }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Start Date -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputStart" class="col-sm-2 col-form-label">{{ _('Start Date') }}</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" id="inputStart" name="inputStart">
+                    </div>
+                </div>
+                <!-- End Date -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputEnd" class="col-sm-2 col-form-label" >{{ _('End Date') }}</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" id="inputEnd" name="inputEnd">
+                    </div>
+                </div>
+                <!-- Published -->
+                <!-- <div class="row mb-3 mx-4">
+                    <label for="inputPublished" class="col-sm-2 col-form-label">Published</label>
+                    <select id="inputPublished" autocomplete="off" class="form-select col-sm-2" size="1" name="inputPublished" area-label="Published" type="select">
+                        <option selected value="0">* Select Status</option>
+                            <option type="text" value="1">Yes</option>
+                            <option type="text" value="0">No</option>
+                    </select>
+                </div> -->
+                <!-- Curriculum -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCurriculum" class="col-sm-2 col-form-label">{{ _('Curriculum') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputCurriculum" name="inputCurriculum">
+                    </div>
+                </div>
+                <!-- Pre-requisites -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputPrerequisite" class="col-sm-2 col-form-label">{{ _('Pre-requisite') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputPrerequisite" name="inputPrerequisite">
+                    </div>
+                </div>
+                <!-- Video Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputVideo" class="col-sm-2 col-form-label">{{ _('Intro Video Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputVideo" name="inputVideo">
+                    </div>
+                </div>
+                <!-- Picture -->
+                <!-- <div class="row mb-3 mx-3">
+                    <label for="courseAddPic" class="col-sm-2 col-form-label">Picture</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="file" id="inputGroupFile" name="courseAddPic">
+                    </div>
+                </div> -->
+                <!-- Picture Upload -->
+                <div class="row mb-3 mx-3">
+                    <label for="coursePicture" class="col-sm-2 col-form-label">{{ _('Upload Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input type="file" name="coursePicture" class="form-control" id="inputGroupFile">
+                    </div>
+                  </div>
+                <!-- Structure (select) -->
+                <div class="row mb-3 mx-4">
+                    <label for="inputStructure" class="col-sm-2 col-form-label">{{ _('Structure') }}</label>
+                    <select id="inputStructure" autocomplete="off" class="form-select col-sm-2" size="1" name="inputStructure" area-label="Structure" type="select" required>
+                        <option value="" selected>{{ _('Select Structure') }}</option>
+                        {% for structure in structures %}
+                            <option value="{{ structure.course_structure_id }}">{{ structure.structure }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Language (select) -->
+                <div class="row mb-3 mx-4">
+                    <label for="inputLanguage" class="col-sm-2 col-form-label">{{ _('Language') }}</label>
+                    <select id="inputLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputLanguage" area-label="Language" type="select" required>
+                        <option value="" selected>{{ _('Select Language') }}</option>
+                        {% for language in languages %}
+                            <option value="{{ language.language_id }}">{{ language.language }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Instructor (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputInstructor" class="col-sm-2 col-form-label">{{ _('Instructor') }}</label>
+                    <select id="inputInstructor" autocomplete="off" class="form-select col-sm-2" size="1" name="inputInstructor" area-label="Instructor" type="select" required>
+                        <option value="" selected>{{ _('Select Instructor') }}</option>
+                        {% for instructor in instructors %}
+                            <option value="{{ instructor.id }}">{{ instructor.first_name }} {{ instructor.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Submit New Course -->
+                <input name="course_add_id" type="hidden">
+                <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    {% if yes_edit_translate %}
+    <!-- Display Course information -->
+    <div class="container" id="course_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <!-- Header Container -->
+            <div class="container d-flex text-center">
+                <!-- Spacer -->
+                <div class="col-1">
+                </div>
+                <!-- Container Title -->
+                <div class="col-10 align-self-center">
+                    <h2 class="mt-3 justify-self-center">{{ _('Edit Course Translation') }}</h2>
+                </div>
+                <!-- Container Exit -->
+                <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                    <form action="/courses" method="post">
+                        <button type="submit" class="btn-close" aria-label="Close"></button>
+                    </form>
+                </div>
+            </div>
+        <div class="mb-5 mt-3">
+            {% for course in courses %}
+            <form action="/course_translate_confirm" method="post" enctype="multipart/form-data">  
+                <!-- Original Title -->
+                <div class="row mx-3">
+                    <div class="col-12 align-self-center">
+                        <h5 class="mt-1 justify-self-center">{{ _('Original') }}</h5>
+                    </div>
+                </div>
+                <!-- Course Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputCourseId" class="col-sm-2 col-form-label">{{ _('Course Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputCourseId" aria-describedby="courseIdHelpInline" value="{{ course.course_id }}" readonly>
+                    </div>
+                </div>
+                <!-- Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="inputTitle" name="inputTitle" value="{{ course.course_title }}" readonly>
+                    </div>
+                  </div>
+                  <!-- Subtitle -->
+                  <div class="row mb-3 mx-3">
+                    <label for="inputSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                      <!-- <span class="input-group-text" id="basic-addon1">Subtitle</span> -->
+                      <input type="text" class="form-control text-wrap" id="inputSubtitle" name="inputSubtitle" value="{{ course.course_subtitle }}" readonly>
+                    </div>
+                  </div>
+                  <!-- Overview -->
+                  <div class="row mb-3 mx-3">
+                      <label for="inputOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                      <div class="col-sm-10">
+                          <textarea type="text" rows="3" class="form-control text-wrap" id="inputOverview" name="inputOverview" aria-readonly="true">{{ course.course_overview }}</textarea>
+                      </div>
+                  </div>
+                  <!-- Curriculum -->
+                  <div class="row mb-3 mx-3">
+                    <label for="inputCurriculum" class="col-sm-2 col-form-label">{{ _('Curriculum') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputCurriculum" name="inputCurriculum" value="{{ course.course_curriculum }}" readonly>
+                    </div>
+                </div>
+                <!-- Pre-requisites -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputPrerequisite" class="col-sm-2 col-form-label">{{ ('Pre-requisite') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputPrerequisite" name="inputPrerequisite" value="{{ course.course_prerequisite }}" readonly>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for translation in translations %}
+                <!-- Translation Title -->
+                <div class="row mx-3">
+                    <hr class="hr hr-blurry" />
+                    <div class="col-12 align-self-center">
+                        <h5 class="mt-1 justify-self-center">{{ _('Translation') }}</h5>
+                    </div>
+                </div>
+                <!-- Course Translation Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputCTId" class="col-sm-2 col-form-label">{{ _('Translation Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputCTId" aria-describedby="ctIdHelpInline" value="{{ translation.ct_id }}" readonly>
+                    </div>
+                </div>
+                <!-- CT Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCTTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputCTTitle" name="inputCTTitle" value="{{ translation.ct_title }}" required>
+                    </div>
+                </div>
+                <!-- CT Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCTSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputCTSubtitle" name="inputCTSubtitle" value="{{ translation.ct_subtitle }}">
+                    </div>
+                </div>
+                <!-- CT Overview -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCTOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="inputCTOverview" name="inputCTOverview">{{ translation.ct_overview }}</textarea>
+                    </div>
+                </div>
+                <!-- CT Curriculum -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCTCurriculum" class="col-sm-2 col-form-label">{{ _('Curriculum') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputCTCurriculum" name="inputCTCurriculum" value="{{ translation.ct_curriculum }}">
+                    </div>
+                </div>
+                <!-- CT Pre-requisites -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCTPrerequisite" class="col-sm-2 col-form-label">{{ _('Pre-requisite') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputCTPrerequisite" name="inputCTPrerequisite" value="{{ translation.ct_prerequisites }}">
+                    </div>
+                </div>
+                <!-- CT Language (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputCTLanguage" class="col-sm-2 col-form-label">{{ _('Translation Language') }}</label>
+                    <select id="inputCTLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputCTLanguage" area-label="Level" type="select" required>
+                        {% if translation.ct_language_id %}
+                            {% if translation.ct_language_id == 1 %}
+                            <option selected value="{{ translation.ct_language_id }}">{{ _('English') }}</option>
+                            <option value="2">{{ _('French') }}</option>
+                            {% else %}
+                            <option selected value="{{ translation.ct_language_id }}">{{ _('French') }}</option>
+                            <option value="1">{{ _('English') }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="" selected>{{ _('Select Language') }}</option>
+                            {% for language in languages %}
+                                <option value="{{ language.language_id }}">{{ language.language }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <!-- CT Video Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputCTVideo" class="col-sm-2 col-form-label">{{ _('Intro Video Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputCTVideo" name="inputCTVideo" value="{{ translation.ct_video }}">
+                    </div>
+                </div>
+                <!-- CT Picture Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="currentCTPic" class="col-sm-2 col-form-label">{{ _('Current Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="currentCTPic" name="currentCTPic" value="{{ translation.ct_picture }}">
+                    </div>
+                </div>
+                <!-- CT Picture Upload -->
+                <div class="row mb-3 mx-3">
+                    <label for="ctPicUpload" class="col-sm-2 col-form-label">{{ _('Upload New Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input type="file" name="ctPicUpload" class="form-control" id="ctPicUpload">
+                    </div>
+                </div>
+                
+                <!-- Submit Changes -->
+                <input name="course_edit_id" type="hidden" value="{{ edit_course_id }}">
+                <input name="course_translation_id" type="hidden" value="{{ ct_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

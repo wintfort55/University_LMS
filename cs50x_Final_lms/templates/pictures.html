@@ -1,0 +1,35 @@
+{% extends "admin_dash.html" %}
+<!-- TODO: EVERYTHING BELOW -->
+{% block title %}
+    {{ _('Index') }}
+{% endblock %}
+
+{% block main %}
+<body>
+  <div class="app">
+
+        <!-- BS Picture Link 2 -->
+        <!-- <div class="row justify-content-center mb-3 mx-3">
+            <div class="col-sm-6">
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="input-group">
+                        <input type="file" name="file" class="form-control" id="inputGroupFile" aria-describedby="inputGroupFileAddon" aria-label="Upload">
+                        <input class="btn btn-outline-secondary" type="submit" value="Upload" id="inputGroupFileAddon">
+                    </div>
+                </form>
+            </div>
+        </div> -->
+
+      <!-- Youtuber form -->
+    <div class="images-section">
+    {% for image in images %}
+        <a href="{{ url_for('serve_image', filename=image)}}" target="_blank">
+            <img src="{{ url_for('serve_image', filename=image)}}"/>
+        </a>
+    {% endfor %}
+    </div>
+    
+  </div>
+</body>
+</html>
+{% endblock %}

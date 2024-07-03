@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ course.course_title }}
+{% endblock %}
+
+{% if admin %}
+    {% block admin_nav %}
+        <li class="nav-item"><a class="nav-link" href="/admin_dash">{{ _('Dashboard') }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="/published_courses">{{ _('Published') }}</a></li>
+    {% endblock %}
+{% endif %}
+
+{% block main %}
+    <!-- Chat GPT - Course Detail Page  style="border: solid rgb(185, 175, 175); border-radius: 2rem;"-->
+    <div class="container p-3">
+        <!-- Title -->
+        <h1 class="mt-3 mb-5">{{ course.course_title }}</h1>
+        <!-- Video -->
+        {% if course.course_video and course.course_video != 'None' %}
+        <div class="container d-flex my-3 justify-content-center">
+            <iframe width="720" height="405" src="{{ course.course_video }}" title="{{ _('YouTube video player') }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        {% else %}
+        <!-- Image -->
+        <div class="container d-flex my-3 justify-content-center">
+            <img src="/static/images/uploads/{{ course.course_picture }}" class="rounded mb-2" style="max-height: 25vh; min-height: 15vh; max-width: 50vw" alt="{{ _('Course image') }}"> 
+        </div>
+        {% endif %}
+        <div class="card" style="border-radius: 2rem;">
+            <div class="card-body">
+                <h5 style="margin-bottom: 1em;">{{ _('Description') }}</h5>
+                <!-- Subtitle -->
+                <h4>{{ course.course_subtitle }}</h4>
+                <!-- Overview -->
+                <p style="margin-bottom: 2em;">{{ course.course_overview }}</p>
+                <!-- Start Date -->
+                {% if course.course_start and course.course_start != 'None' %}
+                    <p><strong>{{ _('Start Date:') }}</strong> {{ course.course_start }}</p>
+                {% endif %}
+                <!-- End Date -->
+                {% if course.course_end and course.course_end != 'None' %}
+                    <p><strong>{{ _('End Date:') }}</strong> {{ course.course_end }}</p>
+                {% endif %}
+                <!-- Capacity -->
+                <p><strong>{{ _('Capacity:') }}</strong> {{ course.course_capacity }}</p>
+                <!-- IF ENGLISH -->
+                {% if lang == 1 %}
+                    <!-- Level -->
+                    {% if course.level_id == 1%}
+                        <p><strong>{{ _('Level:') }}</strong> Beginner</p>
+                    {% elif course.level_id == 2 %}
+                        <p><strong>{{ _('Level:') }}</strong> Intermediate</p>
+                    {% else %}
+                        <p><strong>{{ _('Level:') }}</strong> Advanced</p>
+                    {% endif %}
+                    <!-- Structure -->
+                    {% if course.structure_id == 1%}
+                        <p><strong>{{ _('Structure:') }}</strong> Live</p>
+                    {% elif course.structure_id == 2 %}
+                        <p><strong>{{ _('Structure:') }}</strong> On-Demand</p>
+                    {% else %}
+                        <p><strong>{{ _('Structure:') }}</strong> Live & On-Demand</p>
+                    {% endif %}
+                    <!-- Language -->
+                    <p><strong>{{ _('Language:') }}</strong> {{ 'English' if course.language_id == 1 else 'French'}}</p>
+
+                <!-- IF FRENCH -->
+                {% else %}
+                    <!-- Level -->
+                    {% if course.level_id == 1%}
+                        <p><strong>{{ _('Level:') }}</strong> Débutante</p>
+                    {% elif course.level_id == 2 %}
+                        <p><strong>{{ _('Level:') }}</strong> Intermédiaire</p>
+                    {% else %}
+                        <p><strong>{{ _('Level:') }}</strong> Avancée</p>
+                    {% endif %}
+                    <!-- Structure -->
+                    {% if course.structure_id == 1%}
+                        <p><strong>{{ _('Structure:') }}</strong> En direct</p>
+                    {% elif course.structure_id == 2 %}
+                        <p><strong>{{ _('Structure:') }}</strong> Sur demande</p>
+                    {% else %}
+                        <p><strong>{{ _('Structure:') }}</strong> En direct et à la demande</p>
+                    {% endif %}
+                    <!-- Language -->
+                    <p><strong>{{ _('Language:') }}</strong> {{ 'Anglais' if course.language_id == 1 else 'Français'}}</p>
+                {% endif %}
+                <!-- Instructor -->
+                <p><strong>{{ _('Instructor:') }}</strong> {{ instructor.first_name }} {{ instructor.last_name }}</p>
+                <!-- Curriculum -->
+                {% if course.course_curriculum and course.course_curriculum != 'None' %}
+                <p><strong>{{ _('Curriculum:') }}</strong> {{ course.course_curriculum }}</p>
+                {% endif %}
+                <!-- Prerequisites -->
+                {% if course.course_prerequisites and course.course_prerequisites != 'None' %}
+                <p><strong>{{ _('Prerequisites:') }}</strong> {{ course.course_prerequisites }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <!-- Start Course -->
+        <div class="container my-3">
+            <!-- TODO: Configure -->
+            {% if first_session_exits %}
+            <form action="/section_detail/{{ first_section }}" method="post">
+                <input name="section_id" type="hidden" value="{{ first_section }}">
+                <input name="course_id" type="hidden" value="{{ course.course_id }}">
+                <button class="btn btn-primary" style="min-width: 60px;" type="submit">{{ _('Start Course') }}</button>
+            </form>
+            {% else %}
+            <form action="/section_detail/{{ first_section }}" method="post">
+                <input name="section_id" type="hidden" value="{{ first_section }}">
+                <button class="btn btn-primary disabled" style="min-width: 60px;" type="submit">{{ _('Start Course') }}</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

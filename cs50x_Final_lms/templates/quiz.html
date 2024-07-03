@@ -1,0 +1,974 @@
+{% extends "admin_dash.html" %}
+
+{% block title %}
+    {{ _('Admin-Courses') }}
+{% endblock %}
+
+
+{% block admin_dash_courses %}
+    <!-- VIEW Quiz -->
+    {% if no_edit %}
+        <div class="container" id="courses_no_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <h2 class="mt-3">{{ _('Lesson Quiz') }}</h2>
+            <p class="mt-3">{{ _('Note: Only 1 quiz per lesson enabled for now') }}</p>
+            <!-- Add Quiz Button -->
+            {% if yes_add_quiz %}
+            <form action="/add_quiz" method="post">
+                <input name="lesson_id" type="hidden" value="{{ lesson_id }}">
+                <button class="btn btn-success btn-sm ms-3 my-2" type="submit" style="min-width: 60px;">{{ _('Add Quiz') }}</button>
+            </form>
+            {% else %}
+            <form action="/add_quiz" method="post">
+                <input name="lesson_id" type="hidden" value="{{ lesson_id }}">
+                <button class="btn btn-success btn-sm ms-3 my-2 disabled" type="submit" style="min-width: 60px;">{{ _('Add Quiz') }}</button>
+            </form>
+            {% endif %}
+            <div>
+                <table class="table" style="align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Quiz Id') }}</th>
+                            <th>{{ _('Course') }}</th>
+                            <th>{{ _('Section') }}</th>
+                            <th>{{ _('Lesson') }}</th>
+                            <th>{{ _('Quiz Number') }}</th>
+                            <th>{{ _('Published') }}</th>
+                            <th>{{ _('Options') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the quiz database to display them in this table -->
+                    {% for quiz in quizzes %}
+                        <tr>
+                            <td>{{ quiz.quiz_id }}</td>
+                            <td>{{ quiz.course_title }}</td>
+                            <td>{{ quiz.section_number }}</td>
+                            <td>{{ quiz.lesson_number }}</td>
+                            <td>{{ quiz.quiz_number }}</td>
+                            <td>{{ _('Yes') if quiz.quiz_published else _('No') }}</td>
+                            <td>
+                                <!-- Options -->
+                                <div class="d-inline-flex gap-2">
+                                    {% if quiz.quiz_id %}
+                                    <!-- TODO: UPDATE Other button features -->
+                                    <!-- View -->
+                                    <!-- Edit  (functional)-->
+                                    <form action="/quiz_edit" method="post">
+                                        <input name="quiz_edit_id" type="hidden" value="{{ quiz.quiz_id }}">
+                                        <input name="quiz_lesson_id" type="hidden" value="{{ lesson_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Edit Translate -->
+                                    <form action="/quiz_translate" method="post">
+                                        <input name="quiz_edit_id" type="hidden" value="{{ quiz.quiz_id }}">
+                                        <input name="quiz_lesson_id" type="hidden" value="{{ lesson_id }}">
+                                        <button class="btn btn-info btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Translate') }}</button>
+                                    </form>
+                                    <!-- TODO: What? -->
+                                    {% else %}
+                                    <!-- Disabled View -->
+                                    <form action="/quiz_detail/{{ quiz.quiz_id }}" method="post">
+                                        <input name="course_view_id" type="hidden" value="{{ quiz.quiz_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Disabled Edit -->
+                                    <form action="/quiz_edit" method="post">
+                                        <input name="quiz_edit_id" type="hidden" value="{{ quiz.quiz_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Disabled Sections -->
+                                    <form action="/sections" method="post">
+                                        <input name="section_course_id" type="hidden" value="{{ quiz.quiz_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Answers') }}</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+    <!-- ADD Quiz -->
+    {% if yes_add %}
+    <!-- Display Quiz Field information -->
+    <div class="container" id="quiz_add" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+         <!-- Header Container -->
+         <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1">
+            </div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ _('Add Quiz') }}</h2>
+                <!-- <p class="justify-self-center">1 question minimum</p> -->
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/quiz" method="post">
+                    <input name="quiz_lesson_id" type="hidden" value="{{ lesson_id }}">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            <!-- QUIZ DATABASE -->
+            <form action="/quiz_add_confirm" method="post" enctype="multipart/form-data">
+                 <!-- Lesson -->
+                 <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputLesson" class="col-sm-2 col-form-label">{{ _('Lesson ID') }}</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" style="border: none;" name="inputLesson" id="inputLesson" aria-describedby="courseIdHelpInline" value="{{ lesson_id }}" readonly>
+                    </div>
+                </div>
+                <!-- Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputTitle" class="col-sm-2 col-form-label">{{ _('Quiz Title') }}</label>
+                    <div class="col-sm-8">
+                    <input type="text" class="form-control" id="inputTitle" name="inputTitle" placeholder="*">
+                    </div>
+                </div>
+                <!-- Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                    <!-- <span class="input-group-text" id="basic-addon1">Subtitle</span> -->
+                    <input type="text" class="form-control text-wrap" id="inputSubtitle" name="inputSubtitle">
+                    </div>
+                </div>
+                <!-- Quiz Number -->
+                <!-- <div class="row mb-3 mx-3">
+                    <label for="inputNumber" class="col-sm-2 col-form-label">Quiz Number</label>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control" id="inputNumber" name="inputNumber" placeholder="*">
+                    </div>
+                </div> -->
+                <!-- Published -->
+                <div class="row mb-3 mx-4">
+                    <label for="inputPublished" class="col-sm-2 col-form-label">{{ _('Publish') }}</label>
+                    <select id="inputPublished" autocomplete="off" class="form-select col-sm-2" size="1" name="inputPublished" area-label="Published" type="select">
+                            <option type="text" value="0" selected>{{ _('No') }}</option>
+                            <option type="text" value="1">{{ _('Yes') }}</option>
+                    </select>
+                </div>
+
+                <!-- FIRST QUESTION -->
+                <div class="container py-2 mt-2" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                    <!-- Question 1 -->
+                    <div class="row mt-3 mb-3 mx-3">
+                        <label for="inputQuestion1" class="col-sm-2 col-form-label">{{ _('Question #1') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputQuestion1" name="inputQuestion1" placeholder="*" required>
+                        </div>
+                    </div>
+                    <!-- Answer 1 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer1_Q1" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer1_Q1" name="inputAnswer1_Q1" placeholder="*" required>
+                        </div>
+                    </div>
+                    <!-- Answer 2 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer2_Q1" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer2_Q1" name="inputAnswer2_Q1" placeholder="*" required>
+                        </div>
+                    </div>
+                    <!-- Answer 3 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer3_Q1" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer3_Q1" name="inputAnswer3_Q1">
+                        </div>
+                    </div>
+                    <!-- Answer 4 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer4_Q1" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer4_Q1" name="inputAnswer4_Q1">
+                        </div>
+                    </div>
+                    <!-- Q1 - Correct Answer -->
+                    <div class="row mb-3 mx-4">
+                        <label for="question1_correct" class="col-sm-2 col-form-label">{{ _('Correct Answer') }}</label>
+                        <select id="question1_correct" autocomplete="off" class="form-select col-sm-2" size="1" name="question1_correct" area-label="Correct_Answer" type="select" required>
+                            <option value="" selected>{{ _('Select Answer') }}</option>
+                            <option value="1" type="number">1</option>
+                            <option value="2" type="number">2</option>
+                            <option value="3" type="number">3</option>
+                            <option value="4" type="number">4</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- SECOND QUESTION -->
+                <div class="container py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                    <!-- Question 2 -->
+                    <div class="row mt-3 mb-3 mx-3">
+                        <label for="inputQuestion2" class="col-sm-2 col-form-label">{{ _('Question #2') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputQuestion2" name="inputQuestion2">
+                        </div>
+                    </div>
+                    <!-- Answer 1 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer1_Q2" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer1_Q2" name="inputAnswer1_Q2">
+                        </div>
+                    </div>
+                    <!-- Answer 2 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer2_Q2" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer2_Q2" name="inputAnswer2_Q2">
+                        </div>
+                    </div>
+                    <!-- Answer 3 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer3_Q2" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer3_Q2" name="inputAnswer3_Q2">
+                        </div>
+                    </div>
+                    <!-- Answer 4 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer4_Q2" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer4_Q2" name="inputAnswer4_Q2">
+                        </div>
+                    </div>
+                    <!-- Q2 - Correct Answer -->
+                    <div class="row mb-3 mx-4">
+                        <label for="question2_correct" class="col-sm-2 col-form-label">{{ _('Correct Answer') }}</label>
+                        <select id="question2_correct" autocomplete="off" class="form-select col-sm-2" size="1" name="question2_correct" area-label="Correct_Answer" type="select">
+                            <option value="0" selected>{{ _('Select Answer') }}</option>
+                            <option value="1" type="number">1</option>
+                            <option value="2" type="number">2</option>
+                            <option value="3" type="number">3</option>
+                            <option value="4" type="number">4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- THIRD QUESTION -->
+                <div class="container mb-3 py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                    <!-- Question 3 -->
+                    <div class="row mt-2 mb-3 mx-3">
+                        <label for="inputQuestion3" class="col-sm-2 col-form-label">{{ _('Question #3') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputQuestion3" name="inputQuestion3">
+                        </div>
+                    </div>
+                    <!-- Answer 1 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer1_Q3" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer1_Q3" name="inputAnswer1_Q3">
+                        </div>
+                    </div>
+                    <!-- Answer 2 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer2_Q3" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer2_Q3" name="inputAnswer2_Q3">
+                        </div>
+                    </div>
+                    <!-- Answer 3 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer3_Q3" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer3_Q3" name="inputAnswer3_Q3">
+                        </div>
+                    </div>
+                    <!-- Answer 4 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer4_Q3" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" id="inputAnswer4_Q3" name="inputAnswer4_Q3">
+                        </div>
+                    </div>
+                    <!-- Q3 - Correct Answer -->
+                    <div class="row mb-3 mx-4">
+                        <label for="question3_correct" class="col-sm-2 col-form-label">{{ _('Correct Answer') }}</label>
+                        <select id="question3_correct" autocomplete="off" class="form-select col-sm-2" size="1" name="question3_correct" area-label="Correct_Answer" type="select">
+                            <option value="0" selected>{{ _('Select Answer') }}</option>
+                            <option value="1" type="number">1</option>
+                            <option value="2" type="number">2</option>
+                            <option value="3" type="number">3</option>
+                            <option value="4" type="number">4</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Submit New Quiz -->
+                <input name="quiz_add_id" type="hidden">
+                <input name="quiz_lesson_id" type="hidden" value="{{ lesson_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    {% if yes_edit %}
+    <!-- Display Quiz Field information -->
+    <div class="container" id="quiz_add" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1">
+            </div>
+           <!-- Container Title -->
+           <div class="col-10 align-self-center">
+               <h2 class="mt-3 justify-self-center">{{ _('Edit Quiz') }}</h2>
+               <!-- TODO: config Add Question eventually-->
+               <!-- <form action="/add_question" method="post">
+                    <input name="lesson_id" type="hidden" value="">
+                    <button class="btn btn-success btn-sm ms-3 my-2 disabled" type="submit" style="min-width: 60px;">Add Question</button>
+                </form> -->
+               <!-- <p class="justify-self-center">1 question minimum</p> -->
+           </div>
+           <!-- Container Exit -->
+           <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+               <form action="/quiz" method="post">
+                    <input name="quiz_lesson_id" type="hidden" value="{{ quiz_lesson_id }}">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+               </form>
+           </div>
+        </div>
+        <div class="mb-5 mt-3">
+           <!-- QUIZ DATABASE -->
+        {% for quiz in quizzes %}
+           <form action="/quiz_edit_confirm" method="post" enctype="multipart/form-data">
+                <!-- Quiz Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputQuizId" class="col-sm-2 col-form-label">{{ _('Quiz Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputQuizId" name="inputQuizId" value="{{ quiz.quiz_id }}" readonly>
+                    </div>
+                </div>
+                <!-- Quiz Number -->
+               <div class="row mb-3 mx-3">
+                <label for="inputNumber" class="col-sm-2 col-form-label">{{ _('Quiz #') }}</label>
+                <div class="col-sm-2">
+                    <input type="number" class="form-control" style="border: none;" id="inputNumber" name="inputNumber" value="{{ quiz.quiz_number }}" readonly>
+                </div>
+            </div>
+               <!-- LESSON -->
+               <div class="row mb-3 mx-4">
+                   <label for="inputLesson" class="col-sm-2 col-form-label">{{ _('Lesson') }}</label>
+                   <div class="col-sm-6">
+                       <input type="text" class="form-control" style="border: none;" value="{{ quiz.lesson_number }} - {{ quiz.lesson_title }} - ID: {{ quiz.lesson_id }}" readonly>
+                    </div>
+               </div>
+               <!-- Title -->
+               <div class="row mb-3 mx-3">
+                   <label for="inputTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                   <div class="col-sm-8">
+                   <input type="text" class="form-control" id="inputTitle" name="inputTitle" value="{{ quiz.quiz_title }}">
+                   </div>
+               </div>
+               <!-- Subtitle -->
+               <div class="row mb-3 mx-3">
+                   <label for="inputSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                   <div class="col-sm-10">
+                   <!-- <span class="input-group-text" id="basic-addon1">Subtitle</span> -->
+                   <input type="text" class="form-control text-wrap" id="inputSubtitle" name="inputSubtitle" value="{{ quiz.quiz_subtitle }}">
+                   </div>
+               </div>
+            
+               <!-- Published -->
+                <div class="row mb-3 mx-4">
+                    <label for="inputPublished" class="col-sm-2 col-form-label">{{ _('Publish') }}</label>
+                    <select id="inputPublished" autocomplete="off" class="form-select col-sm-2" size="1" name="inputPublished" area-label="Published" type="select">
+                            <option selected value="{{ quiz.quiz_published }}">{{ _('Yes') if quiz.quiz_published else _('No') }}</option>
+                            <option type="text" value="1">{{ _('Yes') }}</option>
+                            <option type="text" value="0">{{ _('No') }}</option>
+                    </select>
+                </div>
+               <!-- QUESTIONS DATABASE -->
+               {% for question in questions %}
+                    {% if question.question_number == 1 %}
+                    <!-- FIRST QUESTION -->
+                    <div class="container py-2 mt-2" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                        <!-- Question 1 -->
+                        <div class="row mt-3 mb-3 mx-3">
+                            <label for="inputQuestion1" class="col-sm-2 col-form-label">{{ _('Question #1') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputQuestion1" name="inputQuestion1" value="{{ question.question }}">
+                            </div>
+                        </div>
+                        <!-- Answer 1 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer1_Q1" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer1_Q1" name="inputAnswer1_Q1" value="{{ question.answer_1 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer2_Q1" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer2_Q1" name="inputAnswer2_Q1" value="{{ question.answer_2 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 3 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer3_Q1" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer3_Q1" name="inputAnswer3_Q1" value="{{ question.answer_3 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 4 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer4_Q1" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer4_Q1" name="inputAnswer4_Q1" value="{{ question.answer_4 }}">
+                            </div>
+                        </div>
+                        <!-- Q1 - Correct Answer -->
+                        <div class="row mb-3 mx-4">
+                            <label for="question1_correct" class="col-sm-2 col-form-label">{{ _('Correct Answer') }}</label>
+                            <select id="question1_correct" autocomplete="off" class="form-select col-sm-2" size="1" name="question1_correct" area-label="Correct_Answer" type="select">
+                                <option selected>{{ question.correct_answer }}</option>
+                                <option value="1" type="number">1</option>
+                                <option value="2" type="number">2</option>
+                                <option value="3" type="number">3</option>
+                                <option value="4" type="number">4</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if question.question_number == 2 %}
+                    <!-- SECOND QUESTION -->
+                    <div class="container py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                        <!-- Question 2 -->
+                        <div class="row mt-3 mb-3 mx-3">
+                            <label for="inputQuestion2" class="col-sm-2 col-form-label">{{ _('Question #2') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQuestion2" name="inputQuestion2" value="{{ question.question }}">
+                            </div>
+                        </div>
+                        <!-- Answer 1 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer1_Q2" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer1_Q2" name="inputAnswer1_Q2" value="{{ question.answer_1 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer2_Q2" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer2_Q2" name="inputAnswer2_Q2" value="{{ question.answer_2 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 3 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer3_Q2" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer3_Q2" name="inputAnswer3_Q2" value="{{ question.answer_3 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 4 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer4_Q2" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer4_Q2" name="inputAnswer4_Q2" value="{{ question.answer_4 }}">
+                            </div>
+                        </div>
+                        <!-- Q2 - Correct Answer -->
+                        <div class="row mb-3 mx-4">
+                            <label for="question2_correct" class="col-sm-2 col-form-label">{{ _('Correct Answer') }}</label>
+                            <select id="question2_correct" autocomplete="off" class="form-select col-sm-2" size="1" name="question2_correct" area-label="Correct_Answer" type="select">
+                                <option selected>{{ question.correct_answer }}</option>
+                                <option value="1" type="number">1</option>
+                                <option value="2" type="number">2</option>
+                                <option value="3" type="number">3</option>
+                                <option value="4" type="number">4</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if question.question_number == 3 %}
+                    <!-- THIRD QUESTION -->
+                    <div class="container mb-3 py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                        <!-- Question 3 -->
+                        <div class="row mt-2 mb-3 mx-3">
+                            <label for="inputQuestion3" class="col-sm-2 col-form-label">{{ _('Question #3') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQuestion3" name="inputQuestion3" value="{{ question.question }}">
+                            </div>
+                        </div>
+                        <!-- Answer 1 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer1_Q3" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer1_Q3" name="inputAnswer1_Q3" value="{{ question.answer_1 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer2_Q3" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer2_Q3" name="inputAnswer2_Q3" value="{{ question.answer_2 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 3 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer3_Q3" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer3_Q3" name="inputAnswer3_Q3" value="{{ question.answer_3 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 4 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer4_Q3" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputAnswer4_Q3" name="inputAnswer4_Q3" value="{{ question.answer_4 }}">
+                            </div>
+                        </div>
+                        <!-- Q3 - Correct Answer -->
+                        <div class="row mb-3 mx-4">
+                            <label for="question3_correct" class="col-sm-2 col-form-label">{{ _('Correct Answer') }}</label>
+                            <select id="question3_correct" autocomplete="off" class="form-select col-sm-2" size="1" name="question3_correct" area-label="Correct_Answer" type="select">
+                                <option selected>{{ question.correct_answer }}</option>
+                                <option value="1" type="number">1</option>
+                                <option value="2" type="number">2</option>
+                                <option value="3" type="number">3</option>
+                                <option value="4" type="number">4</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% endif %}
+               {% endfor %}
+               <!-- Submit Changes -->
+               <input name="quiz_edit_id" type="hidden" value="{{ edit_quiz_id }}">
+               <input name="quiz_lesson_id" type="hidden" value="{{ quiz.lesson_id }}">
+               <button type="submit" class="btn btn-primary mt-3">{{ _('Submit') }}</button>
+            </form>
+        </div>
+
+            <!-- Delete Quiz -->
+            <form class="align-self-center mb-3" action="/delete_quiz" method="post">
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    {{ _('Delete') }}
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ _('Confirm Deletion') }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{ _('Are you Sure you Want to Delete This Quiz?') }}
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('No') }}</button>
+                        <input name="delete_quiz_id" type="hidden" value="{{ edit_quiz_id }}">
+                        <input name="lesson_edit_id" type="hidden" value="{{ quiz.lesson_id }}">
+                        <button class="btn btn-danger ms-3" style="min-width: 60px;" type="submit">{{ _('Yes, Delete') }}</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </form>
+        {% endfor %}
+    </div>
+   {% endif %}
+   {% if yes_edit_translate %}
+   <!-- Display Lesson information -->
+   <div class="container" id="section_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <!-- Header Container -->
+            <div class="container d-flex text-center">
+               <!-- Spacer -->
+               <div class="col-1"></div>
+               <!-- Container Title -->
+               <div class="col-10 align-self-center">
+                   <h2 class="mt-3 ms-4 justify-self-center">{{ _('Edit Quiz Translation') }}</h2>
+               </div>
+               <!-- Container Exit -->
+               <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                   <form action="/quiz" method="post">
+                       <input name="quiz_lesson_id" type="hidden" value="{{ quiz_lesson_id }}">
+                       <button type="submit" class="btn-close" aria-label="Close"></button>
+                   </form>
+               </div>
+           </div>
+        <div class="mb-5 mt-3">
+            <!-- Original Title -->
+            <div class="row mx-3">
+                <div class="col-12 align-self-center">
+                    <h5 class="mt-1 justify-self-center">{{ _('Original') }}</h5>
+                </div>
+            </div>
+            <!-- QUIZ ORIGINAL -->
+        {% for quiz in quiz_rows %}
+            <!-- Quiz Id -->
+            <div class="row mb-3 mx-3 align-items-center">
+                <label for="inputQuizId" class="col-sm-2 col-form-label">{{ _('Quiz Id') }}</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" style="border: none;" id="inputQuizId" name="inputQuizId" value="{{ quiz.quiz_id }}" readonly>
+                </div>
+            </div>
+            <!-- Title -->
+            <div class="row mb-3 mx-3">
+                <label for="inputTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label >
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" style="border: none;" id="inputTitle" name="inputTitle" value="{{ quiz.quiz_title }}" readonly>
+                </div>
+            </div>
+            <!-- Subtitle -->
+            <div class="row mb-3 mx-3">
+                <label for="inputSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control text-wrap" style="border: none;" id="inputSubtitle" name="inputSubtitle" value="{{ quiz.quiz_subtitle }}" readonly>
+                </div>
+            </div>
+        {% endfor %}
+        <!-- QUESTION ORIGINAL -->
+        {% for question in questions %}
+            {% if question.question_number == 1 %}
+                <!-- FIRST QUESTION -->
+                <div class="container py-2 mt-2" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                    <!-- Question 1 -->
+                    <div class="row mt-3 mb-3 mx-3">
+                        <label for="inputQuestion1" class="col-sm-2 col-form-label">{{ _('Question #1') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" style="border: none;" id="inputQuestion1" name="inputQuestion1" value="{{ question.question }}" readonly>
+                        </div>
+                    </div>
+                    <!-- Answer 1 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer1_Q1" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer1_Q1" name="inputAnswer1_Q1" value="{{ question.answer_1 }}" readonly>
+                        </div>
+                    </div>
+                    {% if question.answer_2 %}
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer2_Q1" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer2_Q1" name="inputAnswer2_Q1" value="{{ question.answer_2 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if question.answer_3 %}
+                        <!-- Answer 3 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer3_Q1" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer3_Q1" name="inputAnswer3_Q1" value="{{ question.answer_3 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if question.answer_4 %}
+                        <!-- Answer 4 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer4_Q1" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer4_Q1" name="inputAnswer4_Q1" value="{{ question.answer_4 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if question.question_number == 2 %}
+                <!-- SECOND QUESTION -->
+                <div class="container py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                    <!-- Question 2 -->
+                    <div class="row mt-3 mb-3 mx-3">
+                        <label for="inputQuestion2" class="col-sm-2 col-form-label">{{ _('Question #2') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" style="border: none;" id="inputQuestion2" name="inputQuestion2" value="{{ question.question }}" readonly>
+                        </div>
+                    </div>
+                    <!-- Answer 1 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer1_Q2" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer1_Q2" name="inputAnswer1_Q2" value="{{ question.answer_1 }}" readonly>
+                        </div>
+                    </div>
+                    {% if question.answer_2 %}
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer2_Q2" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer2_Q2" name="inputAnswer2_Q2" value="{{ question.answer_2 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if question.answer_3 %}
+                        <!-- Answer 3 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer3_Q2" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer3_Q2" name="inputAnswer3_Q2" value="{{ question.answer_3 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if question.answer_4 %}
+                        <!-- Answer 4 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer4_Q2" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer4_Q2" name="inputAnswer4_Q2" value="{{ question.answer_4 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if question.question_number == 3 %}
+                <!-- THIRD QUESTION -->
+                <div class="container mb-3 py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                    <!-- Question 3 -->
+                    <div class="row mt-2 mb-3 mx-3">
+                        <label for="inputQuestion3" class="col-sm-2 col-form-label">{{ _('Question #3') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" style="border: none;" id="inputQuestion3" name="inputQuestion3" value="{{ question.question }}" readonly>
+                        </div>
+                    </div>
+                    <!-- Answer 1 -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputAnswer1_Q3" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer1_Q3" name="inputAnswer1_Q3" value="{{ question.answer_1 }}" readonly>
+                        </div>
+                    </div>
+                    {% if question.answer_2 %}
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer2_Q3" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer2_Q3" name="inputAnswer2_Q3" value="{{ question.answer_2 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if question.answer_3 %}
+                        <!-- Answer 3 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer3_Q3" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer3_Q3" name="inputAnswer3_Q3" value="{{ question.answer_3 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if question.answer_4 %}
+                        <!-- Answer 4 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputAnswer4_Q3" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" style="border: none;" id="inputAnswer4_Q3" name="inputAnswer4_Q3" value="{{ question.answer_4 }}" readonly>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <!-- TRANSLATIONS DATABASES -->
+        <form action="/quiz_translate_confirm" method="post" enctype="multipart/form-data"> 
+            {% for quiz in quiz_translations %}
+                <!-- Spacer -->
+                <div class="mt-5"><hr class="hr hr-blurry" /></div>
+                <!-- Translation Title -->
+                <div class="row mx-3">
+                    <div class="col-12 align-self-center">
+                        <h5 class="mt-1 justify-self-center">{{ _('Translation') }}</h5>
+                    </div>
+                </div>
+                <!-- QUIZ TRANSLATION -->
+                <!-- QZT Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputQZTId" class="col-sm-2 col-form-label">{{ _('Quiz Translation Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputQZTId" name="inputQZTId" value="{{ quiz.qzt_id }}" readonly>
+                    </div>
+                </div>
+                <!-- QZT Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputQZTTitle" class="col-sm-2 col-form-label">{{ _('Title') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputQZTTitle" name="inputQZTTitle" value="{{ quiz.qzt_title }}">
+                    </div>
+                </div>
+                <!-- QZT Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputQZTSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputQZTSubtitle" name="inputQZTSubtitle" value="{{ quiz.qzt_subtitle }}">
+                    </div>
+                </div>
+                <!-- Quiz/Question Translate Language (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputQZTLanguage" class="col-sm-2 col-form-label">{{ _('Translation Language') }}</label>
+                    <select id="inputQZTLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputQZTLanguage" area-label="Level" type="select" required>
+                        {% if quiz.qzt_language_id and quiz.qzt_language_id != 'None' %}
+                            {% if quiz.qzt_language_id == 1 %}
+                            <option selected value="{{ quiz.qzt_language_id }}">{{ _('English') }}</option>
+                            <option value="2">{{ _('French') }}</option>
+                            {% else %}
+                            <option selected value="{{ quiz.qzt_language_id }}">{{ _('French') }}</option>
+                            <option value="1">{{ _('English') }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="" selected>{{ _('Select Language') }}</option>
+                            {% for language in languages %}
+                                <option value="{{ language.language_id }}">{{ language.language }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            {% endfor %}
+            <!-- QUESTION TRANSLATION -->
+            {% for question in question_translations %}
+                {% if question.qnt_question_number == 1 %}
+                    <!-- FIRST QUESTION -->
+                    <div class="container py-2 mt-2" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                        <!-- Question 1 -->
+                        <div class="row mt-3 mb-3 mx-3">
+                            <label for="inputQNTQuestion1" class="col-sm-2 col-form-label">{{ _('Question #1') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="inputQNTQuestion1" name="inputQNTQuestion1" value="{{ question.qnt_question }}">
+                            </div>
+                        </div>
+                        <!-- Answer 1 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputQNTAnswer1_Q1" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTAnswer1_Q1" name="inputQNTAnswer1_Q1" value="{{ question.qnt_answer_1 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputQNTAnswer2_Q1" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTAnswer2_Q1" name="inputQNTAnswer2_Q1" value="{{ question.qnt_answer_2 }}">
+                            </div>
+                        </div>
+                        {% if q1_answer_3 %}
+                            <!-- Answer 3 -->
+                            <div class="row mb-3 mx-3">
+                                <label for="inputQNTAnswer3_Q1" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control text-wrap" id="inputQNTAnswer3_Q1" name="inputQNTAnswer3_Q1" value="{{ question.qnt_answer_3 }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if q1_answer_4 %}
+                            <!-- Answer 4 -->
+                            <div class="row mb-3 mx-3">
+                                <label for="inputQNTAnswer4_Q1" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control text-wrap" id="inputQNTAnswer4_Q1" name="inputQNTAnswer4_Q1" value="{{ question.qnt_answer_4 }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if question.qnt_question_number == 2 %}
+                    <!-- SECOND QUESTION -->
+                    <div class="container py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                        <!-- Question 2 -->
+                        <div class="row mt-3 mb-3 mx-3">
+                            <label for="inputQNTQuestion2" class="col-sm-2 col-form-label">{{ _('Question #2') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTQuestion2" name="inputQNTQuestion2" value="{{ question.qnt_question }}">
+                            </div>
+                        </div>
+                        <!-- Answer 1 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputQNTAnswer1_Q2" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTAnswer1_Q2" name="inputQNTAnswer1_Q2" value="{{ question.qnt_answer_1 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputQNTAnswer2_Q2" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTAnswer2_Q2" name="inputQNTAnswer2_Q2" value="{{ question.qnt_answer_2 }}">
+                            </div>
+                        </div>
+                        {% if q2_answer_3 %}
+                            <!-- Answer 3 -->
+                            <div class="row mb-3 mx-3">
+                                <label for="inputQNTAnswer3_Q2" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control text-wrap" id="inputQNTAnswer3_Q2" name="inputQNTAnswer3_Q2" value="{{ question.qnt_answer_3 }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if q2_answer_4 %}
+                            <!-- Answer 4 -->
+                            <div class="row mb-3 mx-3">
+                                <label for="inputQNTAnswer4_Q2" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control text-wrap" id="inputQNTAnswer4_Q2" name="inputQNTAnswer4_Q2" value="{{ question.qnt_answer_4 }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if question.qnt_question_number == 3 %}
+                    <!-- THIRD QUESTION -->
+                    <div class="container mb-3 py-2 mt-1" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                        <!-- Question 3 -->
+                        <div class="row mt-2 mb-3 mx-3">
+                            <label for="inputQNTQuestion3" class="col-sm-2 col-form-label">{{ _('Question #3') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTQuestion3" name="inputQNTQuestion3" value="{{ question.qnt_question }}">
+                            </div>
+                        </div>
+                        <!-- Answer 1 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputQNTAnswer1_Q3" class="col-sm-2 col-form-label">{{ _('1st Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTAnswer1_Q3" name="inputQNTAnswer1_Q3" value="{{ question.qnt_answer_1 }}">
+                            </div>
+                        </div>
+                        <!-- Answer 2 -->
+                        <div class="row mb-3 mx-3">
+                            <label for="inputQNTAnswer2_Q3" class="col-sm-2 col-form-label">{{ _('2nd Answer') }}</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-wrap" id="inputQNTAnswer2_Q3" name="inputQNTAnswer2_Q3" value="{{ question.qnt_answer_2 }}">
+                            </div>
+                        </div>
+                        {% if q3_answer_3 %}
+                            <!-- Answer 3 -->
+                            <div class="row mb-3 mx-3">
+                                <label for="inputQNTAnswer3_Q3" class="col-sm-2 col-form-label">{{ _('3rd Answer') }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control text-wrap" id="inputQNTAnswer3_Q3" name="inputQNTAnswer3_Q3" value="{{ question.qnt_answer_3 }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if q3_answer_4 %}
+                            <!-- Answer 4 -->
+                            <div class="row mb-3 mx-3">
+                                <label for="inputQNTAnswer4_Q3" class="col-sm-2 col-form-label">{{ _('4th Answer') }}</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control text-wrap" id="inputQNTAnswer4_Q3" name="inputQNTAnswer4_Q3" value="{{ question.qnt_answer_4 }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <!-- Submit Changes -->
+            <!-- TODO: Config question ids? -->
+            <input name="quiz_translate_id" type="hidden" value="{{ qzt_id }}">
+            <input name="quiz_edit_id" type="hidden" value="{{ edit_quiz_id }}">
+            <input name="quiz_lesson_id" type="hidden" value="{{ quiz_lesson_id }}">
+            <button type="submit" class=" mt-4 btn btn-primary">{{ _('Confirm Changes') }}</button>
+        </form>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

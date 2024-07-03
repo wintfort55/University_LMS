@@ -1,0 +1,363 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ course_title }}: {{ _('Section') }} {{section_number}} - {{ _('Lesson') }} {{ lesson.lesson_number }}
+{% endblock %}
+
+{% if admin %}
+    {% block admin_nav %}
+        <li class="nav-item"><a class="nav-link" href="/admin_dash">{{ _('Dashboard') }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="/published_courses">{{ _('Published') }}</a></li>
+    {% endblock %}
+{% endif %}
+
+{% block main %}
+    <div class="container p-3">
+        <!-- Title -->
+        <h3 class="mt-3">{{ course_title }}: {{ section_title }}</h3>
+        <h2 class="mt-2 mb-5">{{ _('Lesson') }} {{ lesson.lesson_number}} - {{ lesson.lesson_title }}</h2>
+        <!-- Video -->
+        {% if lesson.lesson_video and lesson.lesson_video != 'None' %}
+        <div class="container d-flex my-3 justify-content-center">
+            <iframe width="720" height="405" src="{{ lesson.lesson_video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        {% else %}
+        <!-- Image -->
+        <div class="container d-flex my-3 justify-content-center">
+            <img src="/static/images/uploads/{{ lesson.lesson_picture }}" class="rounded mb-2" style="max-height: 25vh; min-height: 15vh; max-width: 50vw" alt="..."> 
+        </div>
+        {% endif %}
+        <!-- CONTENT -->
+        <div class="card" style="border-radius: 2rem;">
+            <div class="card-body">
+                <!-- <h5 style="margin-bottom: 1em;">Description</h5> -->
+                <!-- Subtitle -->
+                <h4>{{ lesson.lesson_subtitle }}</h4>
+                <!-- Overview -->
+                <p style="margin-bottom: 2em;">{{ lesson.lesson_overview }}</p>
+                <!-- Lesson Text -->
+                {% if lesson.lesson_text and lesson.lesson_text != 'None' %}
+                    <p>{{ lesson.lesson_text }}</p>
+                {% endif %}
+                <!-- Lesson Link -->
+                {% if lesson.lesson_link and lesson.lesson_link != 'None' %}
+                    {% if lesson.lesson_link_placeholder and lesson.lesson_link_placeholder != 'None'%}
+                    <div class="my-1">
+                        <a href="{{ lesson.lesson_link }}" target="_blank">{{ lesson.lesson_link_placeholder }}</a>
+                    </div>
+                    {% else %}
+                    <div class="my-1">
+                        <a href="{{ lesson.lesson_link }}" target="_blank">{{ lesson.lesson_link }}</a>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                <!-- Lesson PDF -->
+                {% if lesson.lesson_pdf and lesson.lesson_pdf != 'None' %}
+                    {% if lesson.lesson_pdf_placeholder and lesson.lesson_pdf_placeholder != 'None' %}
+                    <div class="my-2">
+                        <a href="{{ url_for('serve_pdf', filename=lesson.lesson_pdf)}}" target="_blank">{{ lesson.lesson_pdf_placeholder }}</a>
+                    </div>
+                    {% else %}
+                    <div class="my-2">
+                        <a href="{{ url_for('serve_pdf', filename=lesson.lesson_pdf)}}" target="_blank">{{ lesson.lesson_pdf }}</a>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+            <!-- HOMEWORK -->
+
+            <!-- QUIZ --> 
+            {% if quiz_published %}
+                {% if quiz_taken %}
+                    <!-- Show Quiz Grades if taken -->
+                    <button type="button" class="btn btn-success my-5" data-bs-toggle="modal" data-bs-target="#quiz_result_modal">
+                        {{ _('Quiz Results') }}
+                    </button>
+                {% else %}
+                <!-- Button trigger modal --> 
+                <!-- TODO: config quiz start in quiz_grades when able to-->
+                <button type="button" class="btn btn-primary my-5" data-bs-toggle="modal" data-bs-target="#quiz_modal">
+                    {{ _('Start Quiz') }}
+                </button>
+                {% endif %}
+            {% else %}
+                <!-- TODO: remove before going live -->
+                <button type="button" class="btn btn-secondary my-5 disabled" data-bs-toggle="modal" data-bs-target="#quiz_modal">
+                    {{ _('No Quiz') }}
+                </button>
+            {% endif %}
+            <!-- VIEW RESULTS -->
+            <div class="modal fade" id="quiz_result_modal" tabindex="-1" aria-labelledby="quiz_result_modal_label" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" fs-5 id="quiz_result_modal_label" >{{ quiz_title }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <h5>{{ _('Score:') }} {{ quiz_grade }} %</h5>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
+                      <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- TAKE QUIZ: Full screen modal -->
+                <div class="modal" id="quiz_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content">
+                        <form action="/grade_quiz" method="post">
+                            <div class="modal-header row">
+                                <!-- Initial Quiz Modal btn -->
+                                <button type="button" class="btn-close mt-2 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h1 class="modal-title col-12">{{ quiz_title }}</h1>
+                            </div>
+                            <div class="modal-body">
+                            
+                                <h5 class="my-3">{{ quiz_subtitle }}</h5>
+                                <div class="container mb-3 py-2 mt-1">
+                                            <!-- QUESTION 1 -->
+                                            {% if question_1 %}
+                                                <div class="container py-2 mt-2" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                                                    <!-- Question 1-->
+                                                    <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                        <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                            <h6>{{ _('Question #1') }}</h6>
+                                                        </div>
+                                                        <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                            <h4>{{ question_1.question }}</h4>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Choice 1 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>A. {{ question_1.answer_1 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Choice 2 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>B. {{ question_1.answer_2 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% if question_1.answer_3 %}
+                                                    <!-- Choice 3 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>C. {{ question_1.answer_3 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if question_1.answer_4 %}
+                                                    <!-- Choice 4 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>D. {{ question_1.answer_4 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    <!-- Q1 - Answer -->
+                                                    <!-- <div class="container justify-content-lg-center"> -->
+                                                        <div class="row mb-3 justify-content-lg-center">
+                                                            <div class="col-lg-2">
+                                                                <!-- <div class="d-flex justify-content-center"></div> -->
+                                                                    <select id="question1_answer" autocomplete="off" class="form-select text-center" size="1" name="question1_answer" area-label="Student_Answer" type="select" style="width: 100%;" required>
+                                                                        <option value="" selected>{{ _('Select Answer') }}</option>
+                                                                        <option value="1" type="number">A</option>
+                                                                        <option value="2" type="number">B</option>
+                                                                        {% if question_1.answer_3 %}
+                                                                            <option value="3" type="number">C</option>
+                                                                        {% endif %}
+                                                                        {% if question_1.answer_4 %}
+                                                                            <option value="4" type="number">D</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                <!-- </div> -->
+                                                            </div>
+                                                        </div>
+                                                    <!-- </div> -->
+                                                </div>
+                                            {% endif %}
+                                            <!-- QUESTION 2 -->
+                                            {% if question_2 %}
+                                                <div class="container py-2 my-3" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                                                    <!-- Question 2 -->
+                                                    <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                        <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                            <h6>{{ _('Question #2') }}</h6>
+                                                        </div>
+                                                        <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                            <h4>{{ question_2.question }}</h4>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Choice 1 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>A. {{ question_2.answer_1 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Choice 2 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>B. {{ question_2.answer_2 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% if question_2.answer_3 %}
+                                                    <!-- Choice 3 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>C. {{ question_2.answer_3 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if question_2.answer_4 %}
+                                                    <!-- Choice 4 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>D. {{ question_2.answer_4 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    <!-- Q2 - Answer -->
+                                                    <!-- <div class="container justify-content-lg-center"> -->
+                                                        <div class="row mb-3 justify-content-lg-center">
+                                                            <div class="col-lg-2">
+                                                                <!-- <div class="d-flex justify-content-center"></div> -->
+                                                                    <select id="question2_answer" autocomplete="off" class="form-select text-center" size="1" name="question2_answer" area-label="Student_Answer" type="select" style="width: 100%;" required>
+                                                                        <option value="" selected>{{ _('Select Answer') }}</option>
+                                                                        <option value="1" type="number">A</option>
+                                                                        <option value="2" type="number">B</option>
+                                                                        {% if question_2.answer_3 %}
+                                                                            <option value="3" type="number">C</option>
+                                                                        {% endif %}
+                                                                        {% if question_2.answer_4 %}
+                                                                            <option value="4" type="number">D</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                <!-- </div> -->
+                                                            </div>
+                                                        </div>
+                                                    <!-- </div> -->
+                                                </div>
+                                            {% endif %}
+                                            <!-- QUESTION 3 -->
+                                            {% if question_3 %}
+                                                <div class="container py-2 my-3" style="border: solid rgb(90, 86, 86); border-radius: 1rem;">
+                                                    <!-- Question 3 -->
+                                                    <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                        <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                            <h6>{{ _('Question #3') }}</h6>
+                                                        </div>
+                                                        <div class="row mt-3 mb-3 mx-3 justify-content-center">
+                                                            <h4>{{ question_3.question }}</h4>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Choice 1 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>A. {{ question_3.answer_1 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Choice 2 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>B. {{ question_3.answer_2 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% if question_3.answer_3 %}
+                                                    <!-- Choice 3 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>C. {{ question_3.answer_3 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if question_3.answer_4 %}
+                                                    <!-- Choice 4 -->
+                                                    <div class="row mb-3 mx-3 justify-content-center">
+                                                        <div class="col-sm-4">
+                                                            <p>D. {{ question_3.answer_4 }}</p>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    <!-- Q3 - Answer -->
+                                                    <!-- <div class="container justify-content-lg-center"> -->
+                                                        <div class="row mb-3 justify-content-lg-center">
+                                                            <div class="col-lg-2">
+                                                                <!-- <div class="d-flex justify-content-center"></div> -->
+                                                                    <select id="question3_answer" autocomplete="off" class="form-select text-center" size="1" name="question3_answer" area-label="Student_Answer" type="select" style="width: 100%;" required>
+                                                                        <option value="" selected>{{ _('Select Answer') }}</option>
+                                                                        <option value="1" type="number">A</option>
+                                                                        <option value="2" type="number">B</option>
+                                                                        {% if question_3.answer_3 %}
+                                                                            <option value="3" type="number">C</option>
+                                                                        {% endif %}
+                                                                        {% if question_3.answer_4 %}
+                                                                            <option value="4" type="number">D</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                <!-- </div> -->
+                                                            </div>
+                                                        </div>
+                                                    <!-- </div> -->
+                                                </div>
+                                            {% endif %}
+                                            <!-- end if quiz 1 -->
+                                    <!-- WHERE For quiz in quizzes ended -->
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
+                            <!-- TODO: enable submit  -->
+                                <input name="grade_quiz_id" type="hidden" value="{{ quiz_id }}">
+                                <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+        <!-- Buttons -->
+        <div class="containter text-center">
+            <div class="row d-flex justify-content-center">
+                <!-- TODO: Previous -->
+                <div class="col-2 my-3">
+                    {% if prev_section %}
+                        <form action="/section_detail/{{ prev_section }}" method="post">
+                            <input name="prev_section_id" type="hidden" value="{{ prev_section }}">
+                            <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Previous') }}</button>
+                        </form>
+                    {% else %}
+                    <!-- Previous Lesson -->
+                        <form action="/lesson_detail/{{ prev_lesson }}" method="post">
+                            <input name="prev_lesson_id" type="hidden" value="{{ prev_lesson }}">
+                            <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Previous') }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <!-- Next -->
+                <div class="col-2 my-3">
+                    <!-- More lessons in sections -->
+                    {% if lesson_flag %}
+                    <form action="/lesson_detail/{{ next_id }}" method="post">
+                        <input name="next_lesson_id" type="hidden" value="{{ next_id }}">
+                        <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Complete & Continue') }}</button>
+                    </form>
+                    <!-- Last lesson, More sections -->
+                    {% elif section_flag %}
+                    <form action="/section_detail/{{ next_id }}" method="post">
+                        <input name="nex_section_id" type="hidden" value="{{ next_id }}">
+                        <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Complete & Continue') }}</button>
+                    </form>
+                    <!-- Last lesson in Course -->
+                    {% else %}
+                        <button class="btn btn-primary disabled prev_next_btn" type="submit">{{ _('End Course') }}</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

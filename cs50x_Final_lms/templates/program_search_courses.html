@@ -1,0 +1,30 @@
+{% for result in results %}
+<tr>
+    <td>{{ result.course_id }}</td>
+    <td>{{ result.course_title }}</td>
+    <td>{{ result.course_capacity }}</td>
+    <td>{{ result.level }}</td>
+    <td>{{ result.first_name }} {{ result.last_name }}</td>
+    <td>{{ _('French') if result.language_id == 2 else _('English') }}</td>
+    <td>{{ _('Yes') if result.course_published else _('No') }}</td>
+    <td>
+        <!-- Options -->
+        <div class="d-inline-flex gap-2">
+            {% if result.course_id %}
+            <!-- View -->
+            <form action="/program_course_add" method="post">
+                <input name="program_id" type="hidden" value="{{ program_id }}">
+                <input name="course_id" type="hidden" value="{{ result.course_id }}">
+                <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Add') }}</button>
+            </form>
+            {% else %}
+            <!-- View -->
+            <form action="/program_course_add" method="post">
+                <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Add') }}</button>
+            </form>
+            {% endif %}
+        </div>
+    </td>
+</tr>
+{% endfor %}
+

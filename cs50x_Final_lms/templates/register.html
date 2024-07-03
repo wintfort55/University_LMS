@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Register') }}
+{% endblock %}
+
+{% block main %}
+    <div class="container mb-5 mt-3 align-items-center">
+        <form action="/register" method="post">
+            <!-- Language -->
+            <!-- Access Code -->
+            <div class="mb-5">
+                <label for="access_code" class="form-label fw-semibold">2. {{ _('Please Enter Your Access Code') }}</label>
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="access_code" name="code" placeholder="{{ _('Access Code') }}" type="text" required>
+            </div>
+            <!-- Register User -->
+            <div class="mb-3">
+                <label for="username" class="form-label fw-semibold">3. {{ _('Register') }}</label>
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="first_name" name="first_name" placeholder="{{ _('First Name') }}" type="text" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="last_name" placeholder="{{ _('Last Name') }}" type="text" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="email" placeholder="{{ _('Email') }}" type="email" required>
+            </div>
+            
+            <div class="mb-3">
+                <!-- <label for="username" class="form-label fw-semibold">Login Information</label> -->
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="{{ _('Enter a Username') }}" type="text" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="password" placeholder="{{ _('Enter a Password') }}" type="password" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" name="confirmation" placeholder="{{ _('Confirm Password') }}" type="password" required>
+            </div>
+            <button class="btn btn-primary" type="submit">{{ _('Register') }}</button>
+        </form>
+    </div>
+{% endblock %}

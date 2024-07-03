@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Student Dashboard') }}
+{% endblock %}
+
+<!-- Student Navigation Bar -->
+{% block students %}
+        <li class="nav-item"><a class="nav-link" href="/">{{ _('Student') }}</a></li>
+{% endblock %}
+
+{% block main %}
+    <h1>{{ _('Hello, SR North Student!') }}</h1>
+{% endblock %}

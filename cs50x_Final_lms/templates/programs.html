@@ -1,0 +1,594 @@
+{% extends "admin_dash.html" %}
+
+{% block title %}
+    {{ _('Admin-Programs') }}
+{% endblock %}
+
+
+{% block admin_dash_programs %}
+    {% if no_edit %}
+    <!-- VIEW Programs -->
+        <div class="container" id="programs_no_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <h2 class="mt-3">{{ _('All Programs') }}</h2>
+            <!-- Add Program Button -->
+            <form action="/add_program" method="post">
+                <button class="btn btn-success btn-sm ms-3 my-2 disabled" type="submit" style="min-width: 60px;">{{ _('Add Program') }}</button>
+            </form>
+            <div>
+                <table class="table" style="align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Id') }}</th>
+                            <th>{{ _('Program') }}</th>
+                            <th>{{ _('Start Date') }}</th>
+                            <th>{{ _('End Date') }}</th>
+                            <th>{{ _('Coordinator') }}</th>
+                            <th>{{ _('Published') }}</th>
+                            <th>{{ _('Options') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the programs database to display them in this table -->
+                        {% for program in programs %}
+                        <tr>
+                            <td>{{ program.program_id }}</td>
+                            <td>{{ program.program }}</td>
+                            <td>{{ program.program_start_date }}</td>
+                            <td>{{ program.program_end_date }}</td>
+                            <td>
+                            {% if program.program_coordinator_id %}
+                                <p>{{ program.first_name }} {{ program.last_name }}<p>
+                                <!-- <p>{{ program.program_coordinator_id }}</p> -->
+                            {% else %}
+                                <p>{{ _('None') }}</p>
+                            {% endif %}</td>
+                            <td>{{ _('Yes') if program.program_published else _('No') }}</td>
+                            <td>
+                                <!-- Options -->
+                                <div class="d-inline-flex gap-2">
+                                    {% if program.program_id %}
+                                    <!-- View -->
+                                    <form action="/program_detail/{{ program.program_id }}" method="post">
+                                        <input name="program_view_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Edit -->
+                                    <form action="/program_edit" method="post">
+                                        <input name="program_edit_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Edit Translate -->
+                                    <form action="/program_translate" method="post">
+                                        <input name="program_translate_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-info btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Translate') }}</button>
+                                    </form>
+                                    <!-- Add Courses -->
+                                    <form action="/program_courses" method="post">
+                                        <input name="program_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Courses') }}</button>
+                                    </form>
+                                    {% else %}
+                                    <!-- Disabled View -->
+                                    <form action="/program_detail/{{ program.program_id }}" method="post">
+                                        <input name="program_view_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Disabled Edit -->
+                                    <form action="/program_edit" method="post">
+                                        <input name="program_edit_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Disabled Edit Translate -->
+                                    <form action="/program_translate" method="post">
+                                        <input name="program_translate_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-info btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Translate') }}</button>
+                                    </form>
+                                    <!-- Disabled Courses -->
+                                    <form action="/program_courses" method="post">
+                                        <input name="program_id" type="hidden" value="{{ program.program_id }}">
+                                        <button class="btn btn-secondary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Courses') }}</button>
+                                    </form>
+                                    {% endif %}
+                                    <!-- Delete 1 (works if wanted)-->
+                                    <!-- <form action="/delete_course" method="post">
+                                        <input name="delete_course_id" type="hidden" value="">
+                                        <button class="btn btn-danger ms-3 btn-sm ms-2" style="min-width: 60px;" type="submit">Delete 1</button>
+                                    </form> -->
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+    <!-- ADD Program -->
+    {% if yes_add %}
+    <!-- TODO: CONFIG eventually -->
+    {% endif %}
+    <!-- EDIT Program -->
+    {% if yes_edit %}
+    <!-- Display Program information -->
+    <div class="container" id="program_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1"></div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ _('Edit Program') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/programs" method="post">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            {% for program in programs %}
+            <form action="/program_edit_confirm" method="post" enctype="multipart/form-data">  
+                <!-- Program Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputProgramId" class="col-sm-2 col-form-label">{{ _('Program Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputProgramId" aria-describedby="programIdHelpInline" value="{{ program.program_id }}" readonly>
+                    </div>
+                </div>
+                <!-- TODO: Enable editing and border when ready: Program Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramTitle" class="col-sm-2 col-form-label">{{ _('Program') }}</label>
+                    <div class="col-sm-8">
+                    <input type="text" class="form-control" style="border: none;" id="inputProgramTitle" name="inputProgramTitle" value="{{ program.program }}" readonly>
+                    </div>
+                </div>
+                <!-- Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramPlaceTitle" class="col-sm-2 col-form-label">{{ _('Program Title') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputProgramPlaceTitle" name="inputProgramPlaceTitle" value="{{ program.program_title }}" required>
+                    </div>
+                </div>
+                <!-- Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputProgramSubtitle" name="inputProgramSubtitle" value="{{ program.program_subtitle }}">
+                    </div>
+                </div>
+                <!-- Overview -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramOverview" class="col-sm-2 col-form-label">{{ _('Overview') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="inputProgramOverview" name="inputProgramOverview">{{ program.program_overview }}</textarea>
+                    </div>
+                </div>
+                <!-- Start Date -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramStart" class="col-sm-2 col-form-label">{{ _('Start Date') }}</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" id="inputProgramStart" name="inputProgramStart" value="{{ program.program_start_date }}">
+                    </div>
+                </div>
+                <!-- End Date -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramEnd" class="col-sm-2 col-form-label" >{{ _('End Date') }}</label>
+                    <div class="col-sm-2">
+                        <input type="date" class="form-control" id="inputProgramEnd" name="inputProgramEnd" value="{{ program.program_end_date }}">
+                    </div>
+                </div>
+                <!-- Coordinator (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputProgramCoordinator" class="col-sm-2 col-form-label">{{ _('Coordinator') }}</label>
+                    <select id="inputProgramCoordinator" autocomplete="off" class="form-select col-sm-2" size="1" name="inputProgramCoordinator" area-label="Level" type="select" required>
+                            <option selected value="{{ program.program_coordinator_id }}">{{ program.first_name }} {{ program.last_name }} - ID: {{ program.program_coordinator_id }}</option>
+                        {% for coordinator in coordinators %}
+                            {% if coordinator.id != program.program_coordinator_id%}
+                            <option value="{{ coordinator.id }}">{{ coordinator.first_name }} {{ coordinator.last_name }} - ID: {{ coordinator.id }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Published -->
+                <div class="row mb-3 mx-4">
+                    <label for="inputProgramPublished" class="col-sm-2 col-form-label">{{ _('Publish') }}</label>
+                    <select id="inputProgramPublished" autocomplete="off" class="form-select col-sm-2" size="1" name="inputProgramPublished" area-label="Published" type="select" required>
+                            <option selected value="{{ program.program_published }}">{{ _('Yes') if program.program_published else _('No') }}</option>
+                            {% if program.program_published == 0 %}
+                            <option type="text" value="1">{{ _('Yes') }}</option>
+                            {% else %}
+                            <option type="text" value="0">{{ _('No') }}</option>
+                            {% endif %}
+                    </select>
+                </div>
+                <!-- Video Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramVideo" class="col-sm-2 col-form-label">{{ _('Intro Video Link') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputProgramVideo" name="inputProgramVideo" value="{{ program.program_video }}">
+                    </div>
+                </div>
+                <!-- Picture Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="currentProgramPic" class="col-sm-2 col-form-label">{{ _('Current Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="currentProgramPic" name="currentProgramPic" value="{{ program.program_picture }}">
+                    </div>
+                </div>
+                <!-- Picture Upload -->
+                <div class="row mb-3 mx-3">
+                    <label for="programPicUpload" class="col-sm-2 col-form-label">{{ _('Upload New Picture') }}</label>
+                    <div class="col-sm-6">
+                        <input type="file" name="programPicUpload" class="form-control" id="programPicUpload">
+                    </div>
+                </div>
+                <!-- Submit Changes -->
+                <input name="program_edit_id" type="hidden" value="{{ edit_program_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+            </form>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if yes_edit_translate %}
+        <!-- Display Program information -->
+        <div class="container" id="course_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <!-- Header Container -->
+            <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1"></div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ _('Edit Program Translation') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/programs" method="post">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            {% for program in programs %}
+            <form action="/program_translate_confirm" method="post" enctype="multipart/form-data">
+                <!-- Original Title -->
+                <div class="row mx-3">
+                    <div class="col-11 align-self-center">
+                        <h5 class="mt-1 ms-5 justify-self-center">{{ _('Original') }}</h5>
+                    </div>
+                </div>  
+                <!-- Program Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputProgramId" class="col-sm-2 col-form-label">{{ _('Program Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputProgramId" aria-describedby="programIdHelpInline" value="{{ program.program_id }}" readonly>
+                    </div>
+                </div>
+                <!-- Program Title (en)-->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramTitle" class="col-sm-2 col-form-label">{{ _('Program') }}</label>
+                    <div class="col-sm-8">
+                    <input type="text" class="form-control" style="border: none;" id="inputProgramTitle" name="inputProgramTitle" value="{{ program.program }}" readonly>
+                    </div>
+                </div>
+                <!-- Title (en)-->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramPlaceTitle" class="col-sm-2 col-form-label">{{ _('Program Title (en)') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" style="border: none;" id="inputProgramPlaceTitle" name="inputProgramPlaceTitle" value="{{ program.program_title }}" readonly>
+                    </div>
+                </div>
+                <!-- Subtitle (en) -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle (en)') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" style="border: none;" id="inputProgramSubtitle" name="inputProgramSubtitle" value="{{ program.program_subtitle }}">
+                    </div>
+                </div>
+                <!-- Overview (en)-->
+                <div class="row mb-3 mx-3">
+                    <label for="inputProgramOverview" class="col-sm-2 col-form-label">{{ _('Overview (en)') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" style="border: none;" id="inputProgramOverview" name="inputProgramOverview" aria-readonly="true">{{ program.program_overview }}</textarea>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for translation in translations %}
+                <!-- Translation Title -->
+                <div class="row mx-3">
+                    <hr class="hr hr-blurry" />
+                    <div class="col-11 align-self-center">
+                        <h5 class="mt-1 ms-5 justify-self-center">{{ _('Translation') }}</h5>
+                    </div>
+                </div>
+                <!-- Program Translation Id -->
+                <div class="row mb-3 mx-3 align-items-center">
+                    <label for="inputPTId" class="col-sm-2 col-form-label">{{ _('Translation Id') }}</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" style="border: none;" id="inputPTId" aria-describedby="ptIdHelpInline" value="{{ translation.pt_id }}" readonly>
+                    </div>
+                </div>
+                <!-- PT Title -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputPTPlaceTitle" class="col-sm-2 col-form-label">{{ _('Program Title (fr)') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputPTPlaceTitle" name="inputPTPlaceTitle" value="{{ translation.pt_title }}" required>
+                    </div>
+                </div>
+                <!-- PT Subtitle -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputPTSubtitle" class="col-sm-2 col-form-label">{{ _('Subtitle (fr)') }}</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control text-wrap" id="inputPTSubtitle" name="inputPTSubtitle" value="{{ translation.pt_subtitle }}">
+                    </div>
+                </div>
+                <!-- PT Overview -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputPTOverview" class="col-sm-2 col-form-label">{{ _('Overview (fr)') }}</label>
+                    <div class="col-sm-10">
+                        <textarea type="text" rows="3" class="form-control text-wrap" id="inputPTOverview" name="inputPTOverview">{{ translation.pt_overview }}</textarea>
+                    </div>
+                </div>
+                <!-- PT Language (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="inputPTLanguage" class="col-sm-2 col-form-label">{{ _('Translation Language') }}</label>
+                    <select id="inputPTLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputPTLanguage" area-label="Level" type="select" required>
+                        {% if translation.pt_language_id %}
+                            {% if translation.pt_language_id == 1 %}
+                            <option selected value="{{ translation.pt_language_id }}">{{ _('English') }}</option>
+                            <option value="2">{{ _('French') }}</option>
+                            {% else %}
+                            <option selected value="{{ translation.pt_language_id }}">{{ _('French') }}</option>
+                            <option value="1">{{ _('English') }}</option>
+                            {% endif %}
+                        {% else %}
+                            <option value="" selected>{{ _('Select Language') }}</option>
+                            {% for language in languages %}
+                                <option value="{{ language.language_id }}">{{ language.language }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <!-- PT Video Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="inputPTVideo" class="col-sm-2 col-form-label">{{ _('Intro Video Link (fr)') }}</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputPTVideo" name="inputPTVideo" value="{{ translation.pt_video }}">
+                    </div>
+                </div>
+                <!-- PT Picture Link -->
+                <div class="row mb-3 mx-3">
+                    <label for="currentPTPic" class="col-sm-2 col-form-label">{{ _('Current Picture (fr)') }}</label>
+                    <div class="col-sm-6">
+                        <input class="form-control" type="text" id="currentPTPic" name="currentPTPic" value="{{ translation.pt_picture }}">
+                    </div>
+                </div>
+                <!-- PT Picture Upload -->
+                <div class="row mb-3 mx-3">
+                    <label for="ptPicUpload" class="col-sm-2 col-form-label">{{ _('Upload New Picture (fr)') }}</label>
+                    <div class="col-sm-6">
+                        <input type="file" name="ptPicUpload" class="form-control" id="ptPicUpload">
+                    </div>
+                </div>
+                <!-- Submit Changes -->
+                <input name="program_edit_id" type="hidden" value="{{ edit_program_id }}">
+                <input name="program_translation_id" type="hidden" value="{{ pt_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+            </form>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if yes_add_course %}
+    <!-- Display Courses Added -->
+    <div class="container my-4" id="program_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1"></div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ _('Program ') }}{{ program_id }}: {{ program_name }} {{ _('courses') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/programs" method="post">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            <!-- COURSES INFO -->
+            <section class="section">
+                <div class="columns">
+                <!-- Search Bar -->
+                  <!-- <div class="column is-one-third is-offset-one-third mb-3">
+                    <input type="text" class="input" placeholder="Search" name="q" hx-get="/program_search_courses" hx-trigger="keyup changed delay:500ms" hx-target="#results">
+                  </div> -->
+                </div>
+                <table class="table" style="align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Id') }}</th>
+                            <th>{{ _('Title') }}</th>
+                            <th>{{ _('Capacity') }}</th>
+                            <th>{{ _('Level') }}</th>
+                            <th>{{ _('Instructor') }}</th>
+                            <th>{{ _('Language') }}</th>
+                            <th>{{ _('Published') }}</th>
+                            <th>{{ _('Course Number') }}</th>
+                            <th>{{ _('Options') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the courses database to display them in this table -->
+                        {% for course in courses %}
+                        <tr>
+                            <td>{{ course.course_id }}</td>
+                            <td>{{ course.course_title }}</td>
+                            <td>{{ course.course_capacity }}</td>
+                            <td>{{ course.level }}</td>
+                            <td>{{ course.first_name }} {{ course.last_name }}</td>
+                            <td>{{ _('French') if course.language_id == 2 else _('English') }}</td>
+                            <td>{{ _('Yes') if course.course_published else _('No') }}</td>
+                            <td>{{ course.pc_course_number }}</td>
+                            <td>
+                                <!-- Options -->
+                                <div class="d-inline-flex gap-2">
+                                    {% if course.course_id %}
+                                    <!-- View -->
+                                    <form action="/course_detail/{{ course.course_id }}" method="post">
+                                        <input name="course_view_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Edit -->
+                                    <form action="/program_course_edit" method="post">
+                                        <input name="program_id" type="hidden" value="{{ course.pc_program_id }}">
+                                        <input name="course_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-warning btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Remove-->
+                                    <form action="/program_course_remove" method="post">
+                                        <input name="program_id" type="hidden" value="{{ course.pc_program_id }}">
+                                        <input name="course_id" type="hidden" value="{{ course.course_id }}">
+                                        <button class="btn btn-danger btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Remove') }}</button>
+                                    </form>
+                                    {% else %}
+                                    <!-- View -->
+                                    <form action="/course_detail/{{ course.course_id }}" method="post">
+                                        <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                    </form>
+                                    <!-- Edit -->
+                                    <form action="/course_edit" method="post">
+                                        <button class="btn btn-warning btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                                    </form>
+                                    <!-- Remove -->
+                                    <form action="/program_course_remove" method="post">
+                                        <button class="btn btn-danger btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Remove') }}</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
+    </div>
+
+    <!-- Display Add Course Search -->
+    <div class="container" id="program_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1"></div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h3 class="mt-3 justify-self-center">{{ _('Courses') }}</h3>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/programs" method="post">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            <!-- COURSE INFO -->
+            <section class="section">
+                <div class="columns">
+                    <!-- Search Bar -->
+                  <div class="column is-one-third is-offset-one-third mb-3">
+                    <input type="text" class="input" placeholder="Search" name="q" hx-get="/program_search_courses" hx-trigger="keyup changed delay:500ms" hx-target="#results">
+                  </div>
+                </div>
+                <table class="table is-fullwidth">
+                  <thead>
+                    <tr>
+                        <th>{{ _('Id') }}</th>
+                        <th>{{ _('Title') }}</th>
+                        <th>{{ _('Capacity') }}</th>
+                        <th>{{ _('Level') }}</th>
+                        <th>{{ _('Instructor') }}</th>
+                        <th>{{ _('Language') }}</th>
+                        <th>{{ _('Published') }}</th>
+                        <th>{{ _('Options') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody id="results">
+                    {% for result in results %}
+                    <tr>
+                        <td>{{ result.course_id }}</td>
+                        <td>{{ result.course_title }}</td>
+                        <td>{{ result.course_capacity }}</td>
+                        <td>{{ result.level }}</td>
+                        <td>{{ result.first_name }} {{ result.last_name }}</td>
+                        <td>{{ _('French') if result.language_id == 2 else _('English') }}</td>
+                        <td>{{ _('Yes') if result.course_published else _('No') }}</td>
+                        <td>
+                        <!-- Options -->
+                        <div class="d-inline-flex gap-2">
+                            {% if result.course_id %}
+                            <!-- View -->
+                            <form action="/program_course_add" method="post">
+                                <input name="program_id" type="hidden" value="{{ program_id }}">
+                                <input name="course_id" type="hidden" value="{{ result.course_id }}">
+                                <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('Add') }}</button>
+                            </form>
+                            {% else %}
+                            <!-- View -->
+                            <form action="/program_course_add" method="post">
+                                <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('Add') }}</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+    {% endif %}
+    {% if yes_edit_course %}
+    <!-- Edit Course Number -->
+    <!-- Display Course information -->
+    <div class="container" id="program_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Spacer -->
+            <div class="col-1"></div>
+            <!-- Container Title -->
+            <div class="col-10 align-self-center">
+                <h2 class="mt-3 justify-self-center">{{ course_title }}: {{ _('Edit Course Number') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/program_courses" method="post">
+                    <input name="program_id" type="hidden" value="{{ program_id }}">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <div class="mb-5 mt-3">
+            <form action="/program_course_edit_confirm" method="post" enctype="multipart/form-data">  
+                <!-- Coordinator (select)-->
+                <div class="row mb-3 mx-4">
+                    <label for="switch_course_id" class="col-sm-2 col-form-label">{{ _('Switch Course With:') }}</label>
+                    <select id="switch_course_id" autocomplete="off" class="form-select col-sm-2" size="1" name="switch_course_id" area-label="Level" type="select">
+                            <option selected value="">{{ _('Select Course') }}</option>
+                        {% for course in courses %}
+                                <option value="{{course.pc_course_id }}"># {{ course.pc_course_number }}: {{ course.course_title }} - ID: {{ course.pc_course_id }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Submit Changes -->
+                <input name="edit_course_id" type="hidden" value="{{ edit_course_id }}">
+                <input name="program_edit_id" type="hidden" value="{{ program_id }}">
+                <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

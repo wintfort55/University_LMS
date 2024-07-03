@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Language') }}
+{% endblock %}
+
+{% block main %}
+    <form action="/setlang" method="post">
+        <!-- Language -->
+            <div class="row mb-3 justify-content-lg-center">
+                <label for="lang" class="form-label fw-semibold">{{ _('1. Select Language | Sélectionnez Langue') }}</label>
+                <div class="col-lg-2">
+                    
+                    <select id="lang" autocomplete="off" class="form-select text-center" size="1" name="lang" area-label="selectLanguage" type="select" style="width: 100%;" required>
+                        <!-- <option selected value="">{{ _('Select') }}</option> -->
+                        <option selected type="text" value="en">{{ _('English') }}</option>
+                        <option type="text" value="fr">{{ _('French') }}</option>
+                    </select>
+                </div>
+            </div>
+        <button class="btn btn-primary" type="submit">{{ _('Select') }}</button>
+    </form>
+{% endblock %}

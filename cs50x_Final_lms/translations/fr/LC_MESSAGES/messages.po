@@ -1,0 +1,1073 @@
+# French translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-06-23 18:11-0500\n"
+"PO-Revision-Date: 2024-06-22 18:19-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.15.0\n"
+
+#: templates/admin_dash.html:4 templates/admin_dash.html:13
+msgid "Admin Dashboard"
+msgstr "Tableau de bord Admin"
+
+#: templates/admin_dash.html:8 templates/course_detail.html:9
+#: templates/layout.html:40 templates/lesson_detail.html:9
+#: templates/published_courses.html:9 templates/section_detail.html:9
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: templates/admin_dash.html:9 templates/course_detail.html:10
+#: templates/courses.html:26 templates/layout.html:41
+#: templates/lesson_detail.html:10 templates/lessons.html:24
+#: templates/published_courses.html:10 templates/quiz.html:35
+#: templates/section_detail.html:10 templates/sections.html:25
+msgid "Published"
+msgstr "Publié"
+
+#: templates/admin_dash.html:17
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: templates/admin_dash.html:20 templates/published_courses.html:4
+msgid "Courses"
+msgstr "Cours"
+
+#: templates/admin_dash.html:23
+msgid "Course Records"
+msgstr "Dossiers des cours"
+
+#: templates/admin_dash.html:26
+msgid "Student Records"
+msgstr "Dossiers des étudiants"
+
+#: templates/apology.html:4
+msgid "Apology"
+msgstr "Excuses"
+
+#: templates/cigca_central_dash.html:4 templates/cigca_east_dash.html:4
+#: templates/cigca_north_dash.html:4 templates/cigca_south_dash.html:4
+#: templates/cigca_west_dash.html:4 templates/rise_dash.html:4
+#: templates/upf_dash.html:4
+msgid "Student Dashboard"
+msgstr "Tableau de bord étudiant"
+
+#: templates/cigca_central_dash.html:9 templates/cigca_east_dash.html:9
+#: templates/cigca_north_dash.html:9 templates/cigca_south_dash.html:9
+#: templates/cigca_west_dash.html:9 templates/rise_dash.html:9
+#: templates/upf_dash.html:9
+msgid "Student"
+msgstr "Étudiant"
+
+#: templates/cigca_central_dash.html:13
+msgid "Hello, SR Central Student!"
+msgstr "Bonjour, étudiant SR Central !"
+
+#: templates/cigca_east_dash.html:13
+msgid "Hello, SR East Student!"
+msgstr "Bonjour, étudiant SR East !"
+
+#: templates/cigca_north_dash.html:13
+msgid "Hello, SR North Student!"
+msgstr "Bonjour, étudiant SR North !"
+
+#: templates/cigca_south_dash.html:13
+msgid "Hello, SR South Student!"
+msgstr "Bonjour, étudiant SR South !"
+
+#: templates/cigca_west_dash.html:13
+msgid "Hello, SR West Student!"
+msgstr "Bonjour, étudiant SR West !"
+
+#: templates/coordinator_dash.html:4
+msgid "Coordinator Dashboard"
+msgstr "Tableau de bord coordinateur"
+
+#: templates/coordinator_dash.html:9
+msgid "CIGCA"
+msgstr "CIGCA"
+
+#: templates/coordinator_dash.html:13
+msgid "Hello, Coordinator!"
+msgstr "Bonjour, coordinateur !"
+
+#: templates/course_detail.html:23
+msgid "YouTube video player"
+msgstr "Lecteur vidéo YouTube"
+
+#: templates/course_detail.html:28
+msgid "Course image"
+msgstr "Image du cours"
+
+#: templates/course_detail.html:33 templates/section_detail.html:32
+msgid "Description"
+msgstr "Description"
+
+#: templates/course_detail.html:40 templates/courses.html:105
+#: templates/published_courses.html:30
+msgid "Start Date:"
+msgstr "Date de début :"
+
+#: templates/course_detail.html:44 templates/courses.html:108
+#: templates/published_courses.html:33
+msgid "End Date:"
+msgstr "Date de fin :"
+
+#: templates/course_detail.html:47 templates/courses.html:110
+#: templates/published_courses.html:35
+msgid "Capacity:"
+msgstr "Capacité :"
+
+#: templates/course_detail.html:49
+msgid "Level:"
+msgstr "Niveau :"
+
+#: templates/course_detail.html:52
+msgid "Curriculum:"
+msgstr "Programme :"
+
+#: templates/course_detail.html:56
+msgid "Prerequisites:"
+msgstr "Prérequis :"
+
+#: templates/course_detail.html:59
+msgid "Structure:"
+msgstr "Structure :"
+
+#: templates/course_detail.html:61
+msgid "Language:"
+msgstr "Langue :"
+
+#: templates/course_detail.html:63
+msgid "Instructor:"
+msgstr "Instructeur :"
+
+#: templates/course_detail.html:73 templates/course_detail.html:78
+msgid "Start Course"
+msgstr "Commencer le cours"
+
+#: templates/course_detail_record.html:4 templates/course_records.html:4
+#: templates/courses.html:4 templates/quiz.html:4
+msgid "Admin-Courses"
+msgstr "Admin-Cours"
+
+#: templates/course_detail_record.html:10
+msgid "Students"
+msgstr "Étudiants"
+
+#: templates/course_detail_record.html:15
+msgid "Student Id"
+msgstr "Identifiant étudiant"
+
+#: templates/course_detail_record.html:16 templates/users.html:18
+#: templates/users.html:93 templates/users.html:233
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: templates/course_detail_record.html:17
+msgid "Full Name"
+msgstr "Nom complet"
+
+#: templates/course_detail_record.html:18
+msgid "Started"
+msgstr "Commencé"
+
+#: templates/course_detail_record.html:19
+msgid "Completed"
+msgstr "Terminé"
+
+#: templates/course_detail_record.html:20
+msgid "Course Grade"
+msgstr "Note du cours"
+
+#: templates/course_detail_record.html:21 templates/users.html:23
+#: templates/users.html:121 templates/users.html:254
+msgid "Role"
+msgstr "Rôle"
+
+#: templates/course_detail_record.html:22 templates/courses.html:27
+#: templates/lessons.html:25 templates/quiz.html:36 templates/sections.html:26
+#: templates/users.html:24 venv/lib/python3.12/site-packages/click/core.py:1387
+msgid "Options"
+msgstr "Options"
+
+#: templates/course_detail_record.html:33
+msgid "Not Yet"
+msgstr "Pas encore"
+
+#: templates/course_detail_record.html:46
+#: templates/course_detail_record.html:52 templates/course_records.html:38
+#: templates/course_records.html:44 templates/courses.html:47
+#: templates/courses.html:63 templates/courses.html:113
+#: templates/lessons.html:45 templates/lessons.html:67
+#: templates/published_courses.html:38 templates/quiz.html:66
+#: templates/sections.html:46 templates/sections.html:62
+msgid "View"
+msgstr "Voir"
+
+#: templates/course_records.html:9
+msgid "All Course Records"
+msgstr "Tous les dossiers des cours"
+
+#: templates/course_records.html:14 templates/courses.html:21
+#: templates/lessons.html:21 templates/sections.html:22 templates/users.html:17
+msgid "Id"
+msgstr "Id"
+
+#: templates/course_records.html:15 templates/courses.html:22
+#: templates/courses.html:168 templates/courses.html:363
+#: templates/lessons.html:22 templates/lessons.html:120
+#: templates/lessons.html:284 templates/quiz.html:354
+#: templates/sections.html:23 templates/sections.html:116
+#: templates/sections.html:237
+msgid "Title"
+msgstr "Titre"
+
+#: templates/course_records.html:16 templates/courses.html:275
+#: templates/courses.html:470
+msgid "Language"
+msgstr "Langue"
+
+#: templates/course_records.html:17 templates/courses.html:23
+#: templates/courses.html:190 templates/courses.html:385
+msgid "Capacity"
+msgstr "Capacité"
+
+#: templates/course_records.html:18
+msgid "Student Enrollment"
+msgstr "Inscription des étudiants"
+
+#: templates/course_records.html:19
+msgid "Total Enrollment"
+msgstr "Inscription totale"
+
+#: templates/course_records.html:20
+msgid "View Enrollment"
+msgstr "Voir l'inscription"
+
+#: templates/course_records.html:29 templates/layout.html:70
+msgid "English"
+msgstr "Anglais"
+
+#: templates/course_records.html:29 templates/layout.html:71
+msgid "French"
+msgstr "Français"
+
+#: templates/courses.html:12
+msgid "All Courses"
+msgstr "Tous les cours"
+
+#: templates/courses.html:15 templates/courses.html:350
+msgid "Add Course"
+msgstr "Ajouter un cours"
+
+#: templates/courses.html:24 templates/courses.html:197
+#: templates/courses.html:392
+msgid "Level"
+msgstr "Niveau"
+
+#: templates/courses.html:25 templates/courses.html:285
+#: templates/courses.html:480 templates/instructor_dash.html:9
+msgid "Instructor"
+msgstr "Instructeur"
+
+#: templates/courses.html:39 templates/courses.html:223
+#: templates/courses.html:224 templates/lessons.html:36
+#: templates/lessons.html:150 templates/lessons.html:151 templates/quiz.html:48
+#: templates/quiz.html:144 templates/quiz.html:372 templates/quiz.html:373
+#: templates/sections.html:37 templates/sections.html:139
+#: templates/sections.html:140
+msgid "Yes"
+msgstr "Oui"
+
+#: templates/courses.html:39 templates/courses.html:223
+#: templates/courses.html:225 templates/courses.html:332
+#: templates/lessons.html:36 templates/lessons.html:150
+#: templates/lessons.html:152 templates/lessons.html:248 templates/quiz.html:48
+#: templates/quiz.html:143 templates/quiz.html:372 templates/quiz.html:374
+#: templates/quiz.html:560 templates/sections.html:37
+#: templates/sections.html:139 templates/sections.html:141
+#: templates/sections.html:201 templates/users.html:172
+msgid "No"
+msgstr "Non"
+
+#: templates/courses.html:52 templates/courses.html:68
+#: templates/lessons.html:50 templates/lessons.html:72 templates/quiz.html:59
+#: templates/quiz.html:71 templates/sections.html:51 templates/sections.html:67
+#: templates/users.html:43 templates/users.html:49
+msgid "Edit"
+msgstr "Éditer"
+
+#: templates/courses.html:57 templates/courses.html:73
+#: templates/sections.html:12
+msgid "Sections"
+msgstr "Sections"
+
+#: templates/courses.html:147
+msgid "Edit Course"
+msgstr "Éditer le cours"
+
+#: templates/courses.html:161
+msgid "Course Id"
+msgstr "Id du cours"
+
+#: templates/courses.html:175 templates/courses.html:370
+#: templates/lessons.html:127 templates/lessons.html:291
+#: templates/quiz.html:126 templates/quiz.html:361 templates/sections.html:123
+#: templates/sections.html:244
+msgid "Subtitle"
+msgstr "Sous-titre"
+
+#: templates/courses.html:183 templates/courses.html:378
+#: templates/lessons.html:134 templates/lessons.html:298
+#: templates/sections.html:130 templates/sections.html:251
+msgid "Overview"
+msgstr "Aperçu"
+
+#: templates/courses.html:207 templates/courses.html:402
+msgid "Start Date"
+msgstr "Date de début"
+
+#: templates/courses.html:214 templates/courses.html:409
+msgid "End Date"
+msgstr "Date de fin"
+
+#: templates/courses.html:221 templates/lessons.html:148
+#: templates/quiz.html:141 templates/quiz.html:370 templates/sections.html:137
+msgid "Publish"
+msgstr "Publier"
+
+#: templates/courses.html:230 templates/courses.html:425
+msgid "Curriculum"
+msgstr "Programme"
+
+#: templates/courses.html:244 templates/courses.html:439
+#: templates/sections.html:146 templates/sections.html:258
+msgid "Intro Video Link"
+msgstr "Lien vidéo d'introduction"
+
+#: templates/courses.html:251 templates/lessons.html:179
+#: templates/sections.html:153
+msgid "Current Picture"
+msgstr "Image actuelle"
+
+#: templates/courses.html:258 templates/lessons.html:186
+#: templates/sections.html:160
+msgid "Upload New Picture"
+msgstr "Télécharger une nouvelle image"
+
+#: templates/courses.html:265 templates/courses.html:460
+msgid "Structure"
+msgstr "Structure"
+
+#: templates/courses.html:295 templates/users.html:149
+msgid "Confirm Changes"
+msgstr "Confirmer les modifications"
+
+#: templates/courses.html:317 templates/lessons.html:233
+#: templates/quiz.html:545 templates/sections.html:186 templates/users.html:157
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/courses.html:325 templates/lessons.html:241
+#: templates/quiz.html:553 templates/sections.html:194 templates/users.html:165
+msgid "Confirm Deletion"
+msgstr "Confirmer la suppression"
+
+#: templates/courses.html:329
+msgid "Are you Sure you Want to Delete This Course?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce cours ?"
+
+#: templates/courses.html:334 templates/lessons.html:251
+#: templates/quiz.html:563 templates/sections.html:204 templates/users.html:174
+msgid "Yes, Delete"
+msgstr "Oui, supprimer"
+
+#: templates/courses.html:394
+msgid "Select Level"
+msgstr "Sélectionner le niveau"
+
+#: templates/courses.html:432
+msgid "Pre-requisite"
+msgstr "Prérequis"
+
+#: templates/courses.html:453
+msgid "Upload Picture"
+msgstr "Télécharger l'image"
+
+#: templates/courses.html:462
+msgid "Select Structure"
+msgstr "Sélectionner la structure"
+
+#: templates/courses.html:472
+msgid "Select Language"
+msgstr "Sélectionner la langue"
+
+#: templates/courses.html:482
+msgid "Select Instructor"
+msgstr "Sélectionner l'instructeur"
+
+#: templates/courses.html:490 templates/lesson_detail.html:305
+#: templates/lessons.html:222 templates/lessons.html:337
+#: templates/quiz.html:299 templates/quiz.html:536 templates/sections.html:175
+#: templates/sections.html:272 templates/users.html:275
+msgid "Submit"
+msgstr "Soumettre"
+
+#: templates/index.html:4 templates/pictures.html:4
+msgid "Index"
+msgstr "Index"
+
+#: templates/index.html:11
+msgid "Welcome,"
+msgstr "Bienvenue,"
+
+#: templates/instructor_dash.html:4
+msgid "Instructor Dashboard"
+msgstr "Tableau de bord instructeur"
+
+#: templates/instructor_dash.html:13
+msgid "Hello, Instructor!"
+msgstr "Bonjour, instructeur !"
+
+#: templates/layout.html:50
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/layout.html:51
+msgid "Log Out"
+msgstr "Déconnexion"
+
+#: templates/layout.html:55 templates/register.html:4
+#: templates/register.html:17 templates/register.html:37
+msgid "Register"
+msgstr "S'inscrire"
+
+#: templates/layout.html:56 templates/login.html:4 templates/login.html:15
+msgid "Log In"
+msgstr "Se connecter"
+
+#: templates/lesson_detail.html:4 templates/quiz.html:32
+#: templates/section_detail.html:4 templates/section_detail.html:18
+msgid "Section"
+msgstr "Section"
+
+#: templates/lesson_detail.html:4 templates/lesson_detail.html:18
+#: templates/quiz.html:33 templates/quiz.html:347
+msgid "Lesson"
+msgstr "Leçon"
+
+#: templates/lesson_detail.html:63
+msgid "Quiz Results"
+msgstr "Résultats du quiz"
+
+#: templates/lesson_detail.html:69
+msgid "Start Quiz"
+msgstr "Commencer le quiz"
+
+#: templates/lesson_detail.html:75
+msgid "No Quiz"
+msgstr "Pas de quiz"
+
+#: templates/lesson_detail.html:87
+msgid "Score:"
+msgstr "Score :"
+
+#: templates/lesson_detail.html:90 templates/lesson_detail.html:302
+msgid "Close"
+msgstr "Fermer"
+
+#: templates/lesson_detail.html:119 templates/quiz.html:152
+#: templates/quiz.html:384
+msgid "Question #1"
+msgstr "Question #1"
+
+#: templates/lesson_detail.html:159 templates/lesson_detail.html:220
+#: templates/lesson_detail.html:281 templates/quiz.html:189
+#: templates/quiz.html:238 templates/quiz.html:288
+msgid "Select Answer"
+msgstr "Sélectionner la réponse"
+
+#: templates/lesson_detail.html:180 templates/quiz.html:201
+#: templates/quiz.html:435
+msgid "Question #2"
+msgstr "Question #2"
+
+#: templates/lesson_detail.html:241 templates/quiz.html:251
+#: templates/quiz.html:486
+msgid "Question #3"
+msgstr "Question #3"
+
+#: templates/lesson_detail.html:319 templates/lesson_detail.html:325
+#: templates/section_detail.html:47 templates/section_detail.html:53
+msgid "Previous"
+msgstr "Précédent"
+
+#: templates/lesson_detail.html:335 templates/lesson_detail.html:341
+msgid "Complete & Continue"
+msgstr "Terminer et continuer"
+
+#: templates/lesson_detail.html:345
+msgid "End Course"
+msgstr "Terminer le cours"
+
+#: templates/lessons.html:4
+msgid "Admin-Lessons"
+msgstr "Admin-Leçons"
+
+#: templates/lessons.html:12 templates/sections.html:56
+#: templates/sections.html:72
+msgid "Lessons"
+msgstr "Leçons"
+
+#: templates/lessons.html:15 templates/lessons.html:268
+msgid "Add Lesson"
+msgstr "Ajouter une leçon"
+
+#: templates/lessons.html:23 templates/lessons.html:214
+msgid "Lesson Number"
+msgstr "Numéro de leçon"
+
+#: templates/lessons.html:55
+msgid "Quiz"
+msgstr "Quiz"
+
+#: templates/lessons.html:77
+msgid "Content"
+msgstr "Contenu"
+
+#: templates/lessons.html:97
+msgid "Edit Lesson"
+msgstr "Éditer la leçon"
+
+#: templates/lessons.html:113
+msgid "Lesson Id"
+msgstr "Id de la leçon"
+
+#: templates/lessons.html:141 templates/lessons.html:327
+msgid "Text"
+msgstr "Texte"
+
+#: templates/lessons.html:157 templates/lessons.html:306
+msgid "Video Link"
+msgstr "Lien vidéo"
+
+#: templates/lessons.html:165
+msgid "Link Placeholder"
+msgstr "Espace réservé pour le lien"
+
+#: templates/lessons.html:172
+msgid "Link"
+msgstr "Lien"
+
+#: templates/lessons.html:193
+msgid "PDF Placeholder"
+msgstr "Espace réservé pour le PDF"
+
+#: templates/lessons.html:200
+msgid "Current PDF"
+msgstr "PDF actuel"
+
+#: templates/lessons.html:207
+msgid "Upload New PDF"
+msgstr "Télécharger un nouveau PDF"
+
+#: templates/lessons.html:245 templates/sections.html:198
+msgid "Are you Sure you Want to Delete This Section?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette section ?"
+
+#: templates/lessons.html:313
+msgid "Additional Link"
+msgstr "Lien supplémentaire"
+
+#: templates/lessons.html:320 templates/sections.html:265
+msgid "Picture"
+msgstr "Image"
+
+#: templates/login.html:18
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié ?"
+
+#: templates/published_courses.html:17
+msgid "Available Courses"
+msgstr "Cours disponibles"
+
+#: templates/quiz.html:12
+msgid "Lesson Quiz"
+msgstr "Quiz de leçon"
+
+#: templates/quiz.html:13
+msgid "Note: Only 1 quiz per lesson enabled for now"
+msgstr "Remarque : Un seul quiz par leçon activé pour l'instant"
+
+#: templates/quiz.html:18 templates/quiz.html:23 templates/quiz.html:96
+msgid "Add Quiz"
+msgstr "Ajouter un quiz"
+
+#: templates/quiz.html:30 templates/quiz.html:333
+msgid "Quiz Id"
+msgstr "Id du quiz"
+
+#: templates/quiz.html:31
+msgid "Course"
+msgstr "Cours"
+
+#: templates/quiz.html:34
+msgid "Quiz Number"
+msgstr "Numéro de quiz"
+
+#: templates/quiz.html:76
+msgid "Answers"
+msgstr "Réponses"
+
+#: templates/quiz.html:112
+msgid "Lesson ID"
+msgstr "ID de la leçon"
+
+#: templates/quiz.html:119
+msgid "Quiz Title"
+msgstr "Titre du quiz"
+
+#: templates/quiz.html:159 templates/quiz.html:208 templates/quiz.html:258
+#: templates/quiz.html:391 templates/quiz.html:442 templates/quiz.html:493
+msgid "1st Answer"
+msgstr "1ère réponse"
+
+#: templates/quiz.html:166 templates/quiz.html:215 templates/quiz.html:265
+#: templates/quiz.html:398 templates/quiz.html:449 templates/quiz.html:500
+msgid "2nd Answer"
+msgstr "2ème réponse"
+
+#: templates/quiz.html:173 templates/quiz.html:222 templates/quiz.html:272
+#: templates/quiz.html:405 templates/quiz.html:456 templates/quiz.html:507
+msgid "3rd Answer"
+msgstr "3ème réponse"
+
+#: templates/quiz.html:180 templates/quiz.html:229 templates/quiz.html:279
+#: templates/quiz.html:412 templates/quiz.html:463 templates/quiz.html:514
+msgid "4th Answer"
+msgstr "4ème réponse"
+
+#: templates/quiz.html:187 templates/quiz.html:236 templates/quiz.html:286
+#: templates/quiz.html:419 templates/quiz.html:470 templates/quiz.html:521
+msgid "Correct Answer"
+msgstr "Réponse correcte"
+
+#: templates/quiz.html:311
+msgid "Edit Quiz"
+msgstr "Éditer le quiz"
+
+#: templates/quiz.html:340
+msgid "Quiz #"
+msgstr "Quiz #"
+
+#: templates/quiz.html:557
+msgid "Are you Sure you Want to Delete This Quiz?"
+msgstr "Êtes-vous sûr de vouloir supprimer ce quiz ?"
+
+#: templates/register.html:12
+msgid "Please Enter Your Access Code"
+msgstr "Veuillez entrer votre code d'accès"
+
+#: templates/register.html:13
+msgid "Access Code"
+msgstr "Code d'accès"
+
+#: templates/register.html:18 templates/users.html:19 templates/users.html:100
+#: templates/users.html:205
+msgid "First Name"
+msgstr "Prénom"
+
+#: templates/register.html:21 templates/users.html:20 templates/users.html:107
+#: templates/users.html:212
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#: templates/register.html:24 templates/users.html:21 templates/users.html:114
+#: templates/users.html:219
+msgid "Email"
+msgstr "E-mail"
+
+#: templates/register.html:29
+msgid "Enter a Username"
+msgstr "Entrez un nom d'utilisateur"
+
+#: templates/register.html:32
+msgid "Enter a Password"
+msgstr "Entrez un mot de passe"
+
+#: templates/register.html:35 templates/reset_password.html:18
+#: templates/users.html:247
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+#: templates/reset_password.html:4 templates/reset_password.html:11
+#: templates/reset_password.html:21 templates/reset_request.html:11
+msgid "Reset Password"
+msgstr "Réinitialiser votre mot de passe"
+
+#: templates/reset_password.html:14
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+#: templates/reset_request.html:4
+msgid "Reset Request"
+msgstr "Demande de réinitialisation"
+
+#: templates/reset_request.html:14
+msgid "Email address"
+msgstr "Courriel"
+
+#: templates/reset_request.html:17
+msgid "Request Password Reset"
+msgstr "Soumettre"
+
+#: templates/rise_dash.html:13
+msgid "Hello, RISE Student!"
+msgstr "Bonjour, étudiant RISE !"
+
+#: templates/section_detail.html:63
+msgid "Continue"
+msgstr "Continuer"
+
+#: templates/section_detail.html:66
+msgid "None"
+msgstr "Aucun"
+
+#: templates/sections.html:4
+msgid "Admin-Sessions"
+msgstr "Admin-Sessions"
+
+#: templates/sections.html:16 templates/sections.html:221
+msgid "Add Section"
+msgstr "Ajouter une section"
+
+#: templates/sections.html:24 templates/sections.html:167
+msgid "Section Number"
+msgstr "Numéro de section"
+
+#: templates/sections.html:92
+msgid "Edit Section"
+msgstr "Éditer la section"
+
+#: templates/sections.html:109
+msgid "Section Id"
+msgstr "Id de la section"
+
+#: templates/upf_dash.html:13
+msgid "Hello, UPF Student!"
+msgstr "Bonjour, étudiant UPF !"
+
+#: templates/users.html:4
+msgid "Admin-Users"
+msgstr "Admin-Utilisateurs"
+
+#: templates/users.html:10
+msgid "All Users"
+msgstr "Tous les utilisateurs"
+
+#: templates/users.html:12 templates/users.html:190
+msgid "Add User"
+msgstr "Ajouter un utilisateur"
+
+#: templates/users.html:22 templates/users.html:132 templates/users.html:226
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+#: templates/users.html:66
+msgid "Edit User"
+msgstr "Éditer l'utilisateur"
+
+#: templates/users.html:81
+msgid "User Id"
+msgstr "Id de l'utilisateur"
+
+#: templates/users.html:169
+msgid "Are you Sure you Want to Delete This User?"
+msgstr "Êtes-vous sûr de vouloir supprimer cet utilisateur ?"
+
+#: templates/users.html:240
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/users.html:257
+msgid "Select Role"
+msgstr "Sélectionner le rôle"
+
+#: venv/lib/python3.12/site-packages/click/_termui_impl.py:518
+msgid "{editor}: Editing failed"
+msgstr "{editor} : Échec de l'édition"
+
+#: venv/lib/python3.12/site-packages/click/_termui_impl.py:522
+msgid "{editor}: Editing failed: {e}"
+msgstr "{editor} : Échec de l'édition : {e}"
+
+#: venv/lib/python3.12/site-packages/click/core.py:1120
+msgid "Aborted!"
+msgstr "Avorté !"
+
+#: venv/lib/python3.12/site-packages/click/core.py:1309
+#: venv/lib/python3.12/site-packages/click/decorators.py:559
+msgid "Show this message and exit."
+msgstr "Afficher ce message et quitter."
+
+#: venv/lib/python3.12/site-packages/click/core.py:1340
+#: venv/lib/python3.12/site-packages/click/core.py:1370
+msgid "(Deprecated) {text}"
+msgstr "(Obsolète) {text}"
+
+#: venv/lib/python3.12/site-packages/click/core.py:1415
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] "Argument supplémentaire inattendu ({args}) reçu"
+msgstr[1] "Arguments supplémentaires inattendus ({args}) reçus"
+
+#: venv/lib/python3.12/site-packages/click/core.py:1428
+msgid "DeprecationWarning: The command {name!r} is deprecated."
+msgstr "Avertissement de dépréciation : La commande {name!r} est obsolète."
+
+#: venv/lib/python3.12/site-packages/click/core.py:1636
+msgid "Commands"
+msgstr "Commandes"
+
+#: venv/lib/python3.12/site-packages/click/core.py:1668
+msgid "Missing command."
+msgstr "Commande manquante."
+
+#: venv/lib/python3.12/site-packages/click/core.py:1746
+msgid "No such command {name!r}."
+msgstr "Commande {name!r} inexistante."
+
+#: venv/lib/python3.12/site-packages/click/core.py:2310
+msgid "Value must be an iterable."
+msgstr "La valeur doit être une séquence itérable."
+
+#: venv/lib/python3.12/site-packages/click/core.py:2333
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] "Attend {nargs} valeurs mais 1 a été donnée."
+msgstr[1] "Attend {nargs} valeurs mais {len} ont été données."
+
+#: venv/lib/python3.12/site-packages/click/core.py:2778
+msgid "env var: {var}"
+msgstr "variable d'environnement : {var}"
+
+#: venv/lib/python3.12/site-packages/click/core.py:2808
+msgid "(dynamic)"
+msgstr "(dynamique)"
+
+#: venv/lib/python3.12/site-packages/click/core.py:2821
+msgid "default: {default}"
+msgstr "par défaut : {default}"
+
+#: venv/lib/python3.12/site-packages/click/core.py:2834
+msgid "required"
+msgstr "obligatoire"
+
+#: venv/lib/python3.12/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr "%(prog)s, version %(version)s"
+
+#: venv/lib/python3.12/site-packages/click/decorators.py:528
+msgid "Show the version and exit."
+msgstr "Afficher la version et quitter."
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:44
+#: venv/lib/python3.12/site-packages/click/exceptions.py:80
+msgid "Error: {message}"
+msgstr "Erreur : {message}"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:72
+msgid "Try '{command} {option}' for help."
+msgstr "Essayez '{command} {option}' pour obtenir de l'aide."
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:121
+msgid "Invalid value: {message}"
+msgstr "Valeur invalide : {message}"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:123
+msgid "Invalid value for {param_hint}: {message}"
+msgstr "Valeur invalide pour {param_hint} : {message}"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:179
+msgid "Missing argument"
+msgstr "Argument manquant"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:181
+msgid "Missing option"
+msgstr "Option manquante"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:183
+msgid "Missing parameter"
+msgstr "Paramètre manquant"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:185
+msgid "Missing {param_type}"
+msgstr "Manquant {param_type}"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:192
+msgid "Missing parameter: {param_name}"
+msgstr "Paramètre manquant : {param_name}"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:212
+msgid "No such option: {name}"
+msgstr "Option inexistante : {name}"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:226
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] "Vouliez-vous dire {possibility} ?"
+msgstr[1] "(Options possibles : {possibilities})"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:262
+msgid "unknown error"
+msgstr "erreur inconnue"
+
+#: venv/lib/python3.12/site-packages/click/exceptions.py:269
+msgid "Could not open file {filename!r}: {message}"
+msgstr "Impossible d'ouvrir le fichier {filename!r} : {message}"
+
+#: venv/lib/python3.12/site-packages/click/formatting.py:156
+msgid "Usage:"
+msgstr "Utilisation :"
+
+#: venv/lib/python3.12/site-packages/click/parser.py:231
+msgid "Argument {name!r} takes {nargs} values."
+msgstr "L'argument {name!r} prend {nargs} valeurs."
+
+#: venv/lib/python3.12/site-packages/click/parser.py:413
+msgid "Option {name!r} does not take a value."
+msgstr "L'option {name!r} ne prend pas de valeur."
+
+#: venv/lib/python3.12/site-packages/click/parser.py:473
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] "L'option {name!r} nécessite un argument."
+msgstr[1] "L'option {name!r} nécessite {nargs} arguments."
+
+#: venv/lib/python3.12/site-packages/click/shell_completion.py:318
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+"La complétion shell n'est pas supportée pour les versions de Bash "
+"antérieures à la 4.4."
+
+#: venv/lib/python3.12/site-packages/click/shell_completion.py:326
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+"Impossible de détecter la version de Bash, la complétion shell n'est pas "
+"supportée."
+
+#: venv/lib/python3.12/site-packages/click/termui.py:158
+msgid "Repeat for confirmation"
+msgstr "Répétez pour confirmer"
+
+#: venv/lib/python3.12/site-packages/click/termui.py:174
+msgid "Error: The value you entered was invalid."
+msgstr "Erreur : La valeur que vous avez entrée est invalide."
+
+#: venv/lib/python3.12/site-packages/click/termui.py:176
+msgid "Error: {e.message}"
+msgstr "Erreur : {e.message}"
+
+#: venv/lib/python3.12/site-packages/click/termui.py:187
+msgid "Error: The two entered values do not match."
+msgstr "Erreur : Les deux valeurs saisies ne correspondent pas."
+
+#: venv/lib/python3.12/site-packages/click/termui.py:243
+msgid "Error: invalid input"
+msgstr "Erreur : entrée invalide"
+
+#: venv/lib/python3.12/site-packages/click/termui.py:773
+msgid "Press any key to continue..."
+msgstr "Appuyez sur n'importe quelle touche pour continuer..."
+
+#: venv/lib/python3.12/site-packages/click/types.py:266
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+"Choisissez parmi :\n"
+"\t{choices}"
+
+#: venv/lib/python3.12/site-packages/click/types.py:300
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] "{value!r} n'est pas {choice}."
+msgstr[1] "{value!r} n'est pas l'un des {choices}."
+
+#: venv/lib/python3.12/site-packages/click/types.py:394
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] "{value!r} ne correspond pas au format {format}."
+msgstr[1] "{value!r} ne correspond pas aux formats {formats}."
+
+#: venv/lib/python3.12/site-packages/click/types.py:414
+msgid "{value!r} is not a valid {number_type}."
+msgstr "{value!r} n'est pas un {number_type} valide."
+
+#: venv/lib/python3.12/site-packages/click/types.py:470
+msgid "{value} is not in the range {range}."
+msgstr "{value} n'est pas dans la plage {range}."
+
+#: venv/lib/python3.12/site-packages/click/types.py:611
+msgid "{value!r} is not a valid boolean."
+msgstr "{value!r} n'est pas un booléen valide."
+
+#: venv/lib/python3.12/site-packages/click/types.py:635
+msgid "{value!r} is not a valid UUID."
+msgstr "{value!r} n'est pas un UUID valide."
+
+#: venv/lib/python3.12/site-packages/click/types.py:822
+msgid "file"
+msgstr "fichier"
+
+#: venv/lib/python3.12/site-packages/click/types.py:824
+msgid "directory"
+msgstr "répertoire"
+
+#: venv/lib/python3.12/site-packages/click/types.py:826
+msgid "path"
+msgstr "chemin"
+
+#: venv/lib/python3.12/site-packages/click/types.py:877
+msgid "{name} {filename!r} does not exist."
+msgstr "{name} {filename!r} n'existe pas."
+
+#: venv/lib/python3.12/site-packages/click/types.py:886
+msgid "{name} {filename!r} is a file."
+msgstr "{name} {filename!r} est un fichier."
+
+#: venv/lib/python3.12/site-packages/click/types.py:894
+msgid "{name} '{filename}' is a directory."
+msgstr "{name} '{filename}' est un répertoire."
+
+#: venv/lib/python3.12/site-packages/click/types.py:903
+msgid "{name} {filename!r} is not readable."
+msgstr "{name} {filename!r} n'est pas lisible."
+
+#: venv/lib/python3.12/site-packages/click/types.py:912
+msgid "{name} {filename!r} is not writable."
+msgstr "{name} {filename!r} n'est pas inscriptible."
+
+#: venv/lib/python3.12/site-packages/click/types.py:921
+msgid "{name} {filename!r} is not executable."
+msgstr "{name} {filename!r} n'est pas exécutable."
+
+#: venv/lib/python3.12/site-packages/click/types.py:987
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] "{len_type} valeurs sont requises, mais {len_value} a été donnée."
+msgstr[1] "{len_type} valeurs sont requises, mais {len_value} ont été données."
+

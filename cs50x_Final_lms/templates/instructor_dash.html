@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Instructor Dashboard') }}
+{% endblock %}
+
+<!-- Instructor Navigation Bar -->
+{% block instructor %}
+        <li class="nav-item"><a class="nav-link" href="/">{{ _('Instructor') }}</a></li>
+{% endblock %}
+
+{% block main %}
+    <h1>{{ _('Hello, Instructor!') }}</h1>
+{% endblock %}

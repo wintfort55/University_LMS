@@ -1,0 +1,281 @@
+{% extends "admin_dash.html" %}
+
+{% block title %}
+    {{ _('Admin-Users') }}
+{% endblock %}
+
+{% block admin_dash_users %}
+    {% if no_edit %}
+        <div class="container" id="users_no_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <h2 class="mt-3">{{ _('All Users') }}</h2>
+            <form action="/add_user" method="post">
+                <button class="btn btn-success btn-sm ms-3 my-2" type="submit" style="min-width: 60px;">{{ _('Add User') }}</button>
+            </form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{{ _('Id') }}</th>
+                        <th>{{ _('Username') }}</th>
+                        <th>{{ _('Name') }}</th>
+                        <th>{{ _('Email') }}</th>
+                        <th>{{ _('Phone Number') }}</th>
+                        <th>{{ _('Role') }}</th>
+                        <th>{{ _('Language') }}</th>
+                        <th>{{ _('Options') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through the users database to display them in this table -->
+                {% for user in users %}
+                    <tr style="align-items: center;">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }} {{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.phone_number }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ _('French') if user.user_language_id == 2 else _('English') }}</td>
+                        <td>
+                            {% if user.id %}
+                            <!-- Enabled button -->
+                            <form action="/edit" method="post">
+                                <input name="edit_id" type="hidden" value="{{ user.id }}">
+                                <button class="btn btn-warning btn-sm edit ms-auto" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                            </form>
+                            {% else %}
+                            <!-- Disabled button -->
+                            <form action="/edit" method="post">
+                                <input name="edit_id" type="hidden" value="{{ user.id }}">
+                                <button class="btn btn-warning btn-sm edit ms-auto disabled" style="min-width: 60px;" type="submit">{{ _('Edit') }}</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    {% if yes_edit %}
+    <!-- Overall Container -->
+    <div class="container" id="users_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Container Title -->
+            <div class="col-11 align-self-center">
+                <h2 class="mt-3 ms-5 justify-self-center">{{ _('Edit User') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/users">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        <!--  Edit users -->
+        <div class="mb-5 mt-3">
+            {% for user in users %}
+                <form action="/user_edit_confirm" method="post">  
+                    <!-- User Id -->
+                    <div class="row mb-3 mx-3 align-items-center">
+                        <label for="inputUserId" class="col-sm-2 col-form-label">{{ _('User Id') }}</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" style="border: none;" id="inputUserId" aria-describedby="userIdHelpInline" value="{{ user.id }}" readonly>
+                        </div>
+                        <!-- <div class="col-auto">
+                            <span id="userIdHelpInline" class="form-text">
+                                (Cannot edit Course Id)
+                            </span>
+                        </div> -->
+                    </div>
+                    <!-- Username -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputUsername" class="col-sm-2 col-form-label">{{ _('Username') }}</label>
+                        <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputUsername" name="inputUsername" value="{{ user.username }}">
+                        </div>
+                    </div>
+                    <!-- First Name -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputFirstName" class="col-sm-2 col-form-label">{{ _('First Name') }}</label>
+                        <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputFirstName" name="inputFirstName" value="{{ user.first_name }}">
+                        </div>
+                    </div>
+                    <!-- Last Name -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputLastName" class="col-sm-2 col-form-label">{{ _('Last Name') }}</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="inputLastName" name="inputLastName" value="{{ user.last_name }}"></textarea>
+                        </div>
+                    </div>
+                    <!-- Email -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputEmail" class="col-sm-2 col-form-label">{{ _('Email') }}</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="inputEmail" name="inputEmail" value="{{ user.email }}">
+                        </div>
+                    </div>
+                    <!-- Role (select)-->
+                    <div class="row mb-3 mx-4">
+                        <label for="inputRole" class="col-sm-2 col-form-label">{{ _('Role') }}</label>
+                        <select id="inputRole" autocomplete="off" class="form-select col-sm-2" size="1" name="inputRole" area-label="Role" type="select">
+                                <option selected value="{{ user.role_id }}">{{ user.role }}</option>
+                            {% for role in roles %}
+                                <option value="{{ role.role_id }}">{{ role.role }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="row mb-3 mx-3">
+                        <label for="inputPhone" class="col-sm-2 col-form-label">{{ _('Phone Number') }}</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="inputPhone" name="inputPhone" value="{{ user.phone_number }}"></textarea>
+                        </div>
+                    </div>
+                    <!-- Language (select) -->
+                    <!-- <div class="row mb-3 mx-4">
+                        <label for="inputUserLanguage" class="col-sm-2 col-form-label">Language</label>
+                        <select id="inputUserLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputUserLanguage" area-label="Language" type="select">
+                                <option selected value=""></option>
+                            
+                        </select>
+                    </div> -->
+                    <!-- TODO: Add Program/Country/subregion etc. -->
+                    
+                    <!-- Submit Changes -->
+                    <input name="user_edit_id" type="hidden" value="{{ edit_user_id }}">
+                    <button type="submit" class="btn btn-primary">{{ _('Confirm Changes') }}</button>
+                </form>
+            {% endfor %}
+            </div>
+            <!-- Delete User -->
+            <form class="align-self-center mb-3" action="/delete_user" method="post">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger btn-sm ms-3" style="min-width: 60px;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    {{ _('Delete') }}
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ _('Confirm Deletion') }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{ _('Are you Sure you Want to Delete This User?') }}
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('No') }}</button>
+                        <input name="delete_user_id" type="hidden" value="{{ edit_user_id }}">
+                        <button class="btn btn-danger ms-3" style="min-width: 60px;" type="submit">{{ _('Yes, Delete') }}</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </form>
+    </div>
+    {% endif %}
+    {% if yes_add %}
+    <!-- Overall Container -->
+    <div class="container" id="users_add" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+
+        <!-- Header Container -->
+        <div class="container d-flex text-center">
+            <!-- Container Title -->
+            <div class="col-11 align-self-center">
+                <h2 class="mt-3 ms-5 justify-self-center">{{ _('Add User') }}</h2>
+            </div>
+            <!-- Container Exit -->
+            <div class="col-1 ms-1 mt-3 align-self-center justify-self-center" style="max-width: 30px;">
+                <form action="/users">
+                    <button type="submit" class="btn-close" aria-label="Close"></button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Adding users -->
+        <div class="mb-5 mt-3 align-items-center">
+            <form action="/user_add_confirm" method="post"> 
+                <!-- First Name -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputFirstName" class="col-sm-2 col-form-label">{{ _('First Name') }}</label>
+                    <div class="col-sm-4">
+                    <input type="text" class="form-control" id="inputFirstName" name="inputFirstName" placeholder="*">
+                    </div>
+                </div>
+                <!-- Last Name -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputLastName" class="col-sm-2 col-form-label">{{ _('Last Name') }}</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="inputLastName" name="inputLastName" placeholder="*">
+                    </div>
+                </div>
+                <!-- Email -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputEmail" class="col-sm-2 col-form-label">{{ _('Email') }}</label>
+                    <div class="col-sm-4">
+                        <input type="email" class="form-control" id="inputEmail" name="inputEmail" placeholder="*">
+                    </div>
+                </div>
+                <!-- Phone Number -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputPhone" class="col-sm-2 col-form-label">{{ _('Phone Number') }}</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="inputPhone" name="inputPhone"></textarea>
+                    </div>
+                </div>
+                <!-- Username -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputUsername" class="col-sm-2 col-form-label">{{ _('Username') }}</label>
+                    <div class="col-sm-4">
+                    <input type="text" class="form-control" id="inputUsername" name="inputUsername" placeholder="*">
+                    </div>
+                </div>
+                <!-- Password -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputPassword" class="col-sm-2 col-form-label">{{ _('Password') }}</label>
+                    <div class="col-sm-4">
+                    <input type="text" class="form-control" id="inputPassword" name="inputPassword" placeholder="*">
+                    </div>
+                </div>
+                <!-- Confirm Password -->
+                <div class="row mb-3 mx-3 justify-content-center">
+                    <label for="inputPasswordConfirm" class="col-sm-2 col-form-label">{{ _('Confirm Password') }}</label>
+                    <div class="col-sm-4">
+                    <input type="text" class="form-control" id="inputPasswordConfirm" name="inputPasswordConfirm" placeholder="*">
+                    </div>
+                </div>
+                <!-- Role (select)-->
+                <div class="row mb-4 mx-4 justify-content-center">
+                    <label for="inputRole" class="col-sm-2 col-form-label">{{ _('Role') }}</label>
+                    <div class="col-sm-4">
+                        <select id="inputRole" autocomplete="off" class="form-select" size="1" name="inputRole" area-label="Role" type="select">
+                            <option selected>{{ _('Select Role') }}</option>
+                            {% for role in roles %}
+                                <option value="{{ role.role_id }}">{{ role.role }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <!-- Language (select) -->
+                <!-- <div class="row mb-3 mx-4">
+                    <label for="inputUserLanguage" class="col-sm-2 col-form-label">Language</label>
+                    <select id="inputUserLanguage" autocomplete="off" class="form-select col-sm-2" size="1" name="inputUserLanguage" area-label="Language" type="select">
+                            <option selected value=""></option>
+                        
+                    </select>
+                </div> -->
+                
+                <!-- Submit New User -->
+                <input name="user_add_id" type="hidden">
+                <button type="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+            </form>
+           
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

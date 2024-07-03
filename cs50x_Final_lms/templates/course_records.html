@@ -1,0 +1,54 @@
+{% extends "admin_dash.html" %}
+
+{% block title %}
+    {{ _('Admin-Courses') }}
+{% endblock %}
+
+{% block admin_dash_course_records %}
+        <div class="container" id="courses_no_edit" style="border: solid rgb(185, 175, 175); border-radius: 3rem;">
+            <h2 class="my-3">{{ _('All Course Records') }}</h2>
+            <div>
+                <table class="table" style="align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('Id') }}</th>
+                            <th>{{ _('Title') }}</th>
+                            <th>{{ _('Language') }}</th>
+                            <th>{{ _('Capacity') }}</th>
+                            <th>{{ _('Student Enrollment') }}</th>
+                            <th>{{ _('Total Enrollment') }}</th>
+                            <th>{{ _('View Enrollment') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through the courses info database to display them in this table -->
+                    {% for course in courses %}
+                        <tr>
+                            <td>{{ course.cg_course_id }}</td>
+                            <td>{{ course.course_title }}</td>
+                            <td>{{ _('English') if course.language_id == 1 else _('French') }}</td>
+                            <td>{{ course.course_capacity }}</td>
+                            <td>{{ course.student_count }}</td>
+                            <td>{{ course.user_count }}</td>
+                            <td>
+                                {% if course.cg_course_id %}
+                                <!-- TODO: View -->
+                                <form action="/course_detail_record/{{ course.cg_course_id }}" method="post">
+                                    <input name="course_view_id" type="hidden" value="{{ course.cg_course_id }}">
+                                    <button class="btn btn-primary btn-sm ms-2" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                </form>
+                                {% else %}
+                                <!-- TODO: Disabled View -->
+                                <form action="/course_detail/{{ course.cg_course_id }}" method="post">
+                                    <input name="course_view_id" type="hidden" value="{{ course.cg_course_id }}">
+                                    <button class="btn btn-primary btn-sm ms-2 disabled" style="min-width: 60px;" type="submit">{{ _('View') }}</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

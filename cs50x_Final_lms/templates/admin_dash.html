@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ _('Admin Dashboard') }}
+{% endblock %}
+
+{% block admin_nav %}
+    <li class="nav-item"><a class="nav-link" href="/admin_dash">{{ _('Dashboard') }}</a></li>
+    <li class="nav-item"><a class="nav-link" href="/published_courses">{{ _('Published') }}</a></li>
+{% endblock %}
+
+{% block main %}
+    <!-- Dash Title -->
+    <h1>{{ _('Admin Dashboard') }}</h1>
+    <!-- Admin Dash Top Panel -->
+    <div class="container d-block justify-content-center align-items-center my-3">
+        <div class="row mb-3 p-3" style="border: solid rgb(185, 175, 175); border-radius: 1rem;">
+            <div class="col-1">
+                <a class="btn btn-dark" href="/users">{{ _('Users') }}</a>
+            </div>
+            <div class="col-1">
+                <a class="btn btn-dark" href="/courses">{{ _('Courses') }}</a>
+            </div>
+            <div class="col-1">
+                <a class="btn btn-dark" href="/programs">{{ _('Programs') }}</a>
+            </div>
+            <div class="col-2">
+                <a class="btn btn-dark" href="/course_records">{{ _('Course Records') }}</a>
+            </div>
+            <div class="col-2">
+                <!-- <a class="btn btn-dark disabled" href="/student_records">{{ _('Student Records') }}</a> -->
+            </div>
+            <div class="col-1">
+                
+            </div>
+        </div>  
+    </div>
+    {% block admin_dash_users %}{% endblock %}
+    {% block admin_dash_courses %}{% endblock %}
+    {% block admin_dash_course_records %}{% endblock %}
+    {% block admin_dash_programs %}{% endblock %}
+{% endblock %}

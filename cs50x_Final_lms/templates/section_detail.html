@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ course_title }}: {{ _('Section') }} {{ section.section_number}} - {{ section.section_title}}
+{% endblock %}
+
+{% if admin %}
+    {% block admin_nav %}
+        <li class="nav-item"><a class="nav-link" href="/admin_dash">{{ _('Dashboard') }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="/published_courses">{{ _('Published') }}</a></li>
+    {% endblock %}
+{% endif %}
+
+{% block main %}
+    <div class="container p-3">
+        <!-- Title -->
+        <h3 class="mt-3">{{ course_title }}</h3>
+        <h1 class="mt-2 mb-5"> {{ _('Section') }} {{ section.section_number}} - {{ section.section_title }}</h1>
+        <!-- Video -->
+        {% if section.section_video and section.section_video != 'None' %}
+        <div class="container d-flex my-3 justify-content-center">
+            <iframe width="720" height="405" src="{{ section.section_video }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        {% else %}
+        <!-- Image -->
+        <div class="container d-flex my-3 justify-content-center">
+            <img src="/static/images/uploads/{{ section.section_picture }}" class="rounded mb-2" style="max-height: 25vh; min-height: 15vh; max-width: 50vw" alt="..."> 
+        </div>
+        {% endif %}
+        <div class="card" style="border-radius: 2rem;">
+            <div class="card-body">
+                <h5 style="margin-bottom: 1em;">{{ _('Description') }}</h5>
+                <!-- Subtitle -->
+                <h4>{{ section.section_subtitle }}</h4>
+                <!-- Overview -->
+                <p style="margin-bottom: 2em;">{{ section.section_overview }}</p>
+            </div>
+        </div>
+        <!-- Buttons -->
+        <div class="containter text-center">
+            <div class="row d-flex justify-content-center">
+                <!-- Previous-->
+                <div class="col-2 my-3">
+                    {% if prev_course %}
+                        <form action="/course_detail/{{ prev_course }}" method="post">
+                            <input name="course_id" type="hidden" value="{{ prev_course }}">
+                            <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Previous') }}</button>
+                        </form>
+                    {% else %}
+                    <!-- Previous Lesson -->
+                        <form action="/lesson_detail/{{ prev_lesson }}" method="post">
+                            <input name="lesson_id" type="hidden" value="{{ prev_lesson }}">
+                            <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Previous') }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <!-- Next -->
+                <div class="col-2 my-3">
+                    <!-- First lesson in section -->
+                    {% if next_lesson_exists %}
+                    <form action="/lesson_detail/{{ first_lesson }}" method="post">
+                        <input name="lesson_id" type="hidden" value="{{ first_lesson }}">
+                        <button class="btn btn-primary prev_next_btn" type="submit">{{ _('Continue') }}</button>
+                    </form>
+                    {% else %}
+                        <button class="btn btn-primary disabled prev_next_btn" type="submit">{{ _('None') }}</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
